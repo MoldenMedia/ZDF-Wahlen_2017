@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "25.01.2017"
+Dim theDateModified     As String = "30.01.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -22,8 +22,8 @@ Dim sGlobalParameter   As Scene.structGlobalParameter
 Dim aTypeOfBar   As Array[String]
 Dim aTypeOfGraph As Array[String]
 '-------------------------------------------------------------------------------
-Dim knMaxGroups    As Integer = 12
-Dim knMaxTotalBars As Integer = 12
+Dim knMaxGroups    As Integer = 20 ' max number of groups set to 20!
+Dim knMaxTotalBars As Integer = 50 ' max number of total bars set to 50!
 
 ' basic dimensions in pixel
 Dim kBaseOffsetX   As Double =   0.0  ' offset from right corner :   91 pixel
@@ -357,7 +357,9 @@ Sub createGeometry_UMVerticalX()
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
 			contGroup.Position.X = fGroupPosX
 		ElseIf iGroup > 1 Then
-			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemWidth+sGraphicDetails.fElemGap) - sGraphicDetails.fElemGap
+' modified 30.01.2017
+'			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemWidth+sGraphicDetails.fElemGap) - sGraphicDetails.fElemGap
+			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemGap) - sGraphicDetails.fElemWidth
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
 			contGroup.Position.X = fGroupPosX
 		End If
@@ -372,7 +374,9 @@ Sub createGeometry_UMVerticalX()
 '			System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
 			' set position
 			If iElem > 1 Then
-				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth )
+' modified 30.01.2017
+'				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth )
+				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap )
 				Scene.dbgOutput(1, strDebugLocation, "[fOffsetX]: [" & fElemPosX & "]")
 				contElement.Position.X = fElemPosX
 			End If
@@ -405,7 +409,7 @@ End Sub
 
 
 '-------------------------------------------------------------------------------
-' modified 08.01.2017 by tm
+' modified 30.01.2017 by tm
 '
 Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails ) As structGraphicDetails
 	Dim strDebugLocation As String = strScriptName & "calcGapsAndOffset_UMVerticalX():"
@@ -420,7 +424,14 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 	strPostfix = ""
 	tmpString = sGraphicDetails.strNumBars
 	tmpString.Split("#", aNumBars)
+
+' bar width deimensions for SVZ and NQR
+'Dim kBarWidth_1_5    As Double = 245.0
+'Dim kBarWidth_6_7    As Double = 245.0
+'Dim kBarWidth_8      As Double = 170.0
+'Dim kBarWidth_9      As Double = 164.0
 	
+' no limitation of maxnumber groups requested
 	If aNumBars.UBound <= knMaxGroups Then
 
 		numBars = 0
@@ -431,30 +442,30 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 		Scene.dbgOutput(1, strDebugLocation, "[aNumBars.UBound] [numBars]: [" & aNumBars.UBound & "] [" & numBars & "]")
 	
 		If numBars <= knMaxTotalBars Then
-			If numBars >= 2 And numBars <= 3 Then
-				strPostfix = "2-3b"
-				sGraphicDetails.fElemWidth = kBarWidth_2_3
-				sGraphicDetails.fGroupGap  = kBarWidth_2_3 * kGroupGap_2_3
-				sGraphicDetails.fElemGap   = kBarWidth_2_3 * kBarGap_2_3
-			ElseIf numBars >= 4 And numBars <= 6 Then
-				strPostfix = "4-6b"
-				sGraphicDetails.fElemWidth = kBarWidth_4_6
-				sGraphicDetails.fGroupGap  = kBarWidth_4_6 * kGroupGap_2_3
-				sGraphicDetails.fElemGap   = kBarWidth_4_6 * kBarGap_2_3
-			ElseIf numBars = 7 Then
-				strPostfix = "7b"
-				sGraphicDetails.fElemWidth = kBarWidth_7
-				sGraphicDetails.fGroupGap  = kBarWidth_7 * kGroupGap_7
-				sGraphicDetails.fElemGap   = kBarWidth_7 * kBarGap_7
-			ElseIf numBars >= 8 And numBars <= 12 Then
-				strPostfix = "8-12b"
-				sGraphicDetails.fElemWidth = kBarWidth_8_12
-				sGraphicDetails.fGroupGap  = kBarWidth_8_12 * kGroupGap_2_3
-				sGraphicDetails.fElemGap   = kBarWidth_8_12 * kBarGap_2_3
+			If numBars >= 1 And numBars <= 5 Then
+				strPostfix = "1-5b"
+				sGraphicDetails.fElemWidth = kBarWidth_1_5
+				sGraphicDetails.fGroupGap  = kGroupGap
+				sGraphicDetails.fElemGap   = kBarGap
+			ElseIf numBars >= 6 And numBars <= 7 Then
+				strPostfix = "6-7b"
+				sGraphicDetails.fElemWidth = kBarWidth_6_7
+				sGraphicDetails.fGroupGap  = kGroupGap
+				sGraphicDetails.fElemGap   = kBarGap
+			ElseIf numBars = 8 Then
+				strPostfix = "8b"
+				sGraphicDetails.fElemWidth = kBarWidth_8
+				sGraphicDetails.fGroupGap  = kGroupGap
+				sGraphicDetails.fElemGap   = kBarGap
+			ElseIf numBars >= 9 And numBars <= knMaxTotalBars Then
+				strPostfix = "9b"
+				sGraphicDetails.fElemWidth = kBarWidth_9
+				sGraphicDetails.fGroupGap  = kGroupGap
+				sGraphicDetails.fElemGap   = kBarGap
 			Else
 				strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
 				strErrorMessage = "wrong number of total bars: [" & numBars & "]\n"
-				strErrorMessage = strErrorMessage & "number of total bars allowed: [2...12]"
+				strErrorMessage = strErrorMessage & "number of total bars allowed: [" & knMaxTotalBars & "]"
 				Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
 			End If
 			
@@ -732,6 +743,7 @@ End Sub
 '
 '
 '-------------------------------------------------------------------------------
+
 
 
 
