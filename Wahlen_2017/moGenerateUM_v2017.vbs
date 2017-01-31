@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "30.01.2017"
+Dim theDateModified     As String = "31.01.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -38,10 +38,17 @@ Dim kHRBarWidth_8    As Double = 195
 Dim kHRBarWidth_9    As Double = 170
 
 ' bar width deimensions for SVZ and NQR
-Dim kBarWidth_1_5    As Double = 245.0
-Dim kBarWidth_6_7    As Double = 245.0
+' use this values when bar prototypes had been built 
+'Dim kBarWidth_1_5    As Double = 245.0
+'Dim kBarWidth_6_7    As Double = 245.0
+'Dim kBarWidth_8      As Double = 170.0
+'Dim kBarWidth_9      As Double = 164.0
+' these values are for temporary testing only !!!!!!!!!!!!!!!!!!!!!!
+Dim kBarWidth_1_5    As Double = 170.0
+Dim kBarWidth_6_7    As Double = 170.0
 Dim kBarWidth_8      As Double = 170.0
-Dim kBarWidth_9      As Double = 164.0
+Dim kBarWidth_9      As Double = 170.0
+
 
 Dim kBarWidth_2_3  As Double = 25.0
 Dim kBarGap_2_3    As Double =  0.08
@@ -129,6 +136,7 @@ Sub OnInitParameters()
 
 	RegisterParameterString("theGraphicName", "graphic name [gUMVP_24]:", "/GENERATED/gUMVP_24", 25, 55, "")
 	RegisterParameterString("theTypeOfGraph", "type of graph [UMVP|UMVD|...]:", "UMVP", 25, 55, "")
+	RegisterParameterString("theTypeOfBar", "type of bar [gUMVP_8b|...]:", "gUMVP_8b", 25, 55, "")
 	RegisterRadioButton("theTypeOfBarSelect", "type of bar select:", 0, aTypeOfBar)
 	RegisterRadioButton("theTypeOfGraphSelect", "type of graph select:", 0, aTypeOfGraph)
 	RegisterParameterDouble("theGroupGap", "distance between groups [8.0]:", 8.0, 0.0, 300.0)
@@ -149,11 +157,13 @@ End Sub
 '-------------------------------------------------------------------------------
 '
 Sub OnParameterChanged(parameterName As String)
-	Dim strGraphicName, strTemp As String
+	Dim strBarName, strTemp As String
 	
 	If parameterName = "theTypeOfGraphSelect" Or parameterName = "theTypeOfBarSelect" Then
 '        strGraphicName = "g" & aTypeOfGraph[ GetParameterInt("theTypeOfGraphSelect") ] & "_" & aTypeOfBar[ GetParameterInt("theTypeOfBarSelect") ]
 		this.ScriptPluginInstance.SetParameterString( "theTypeOfGraph", aTypeOfGraph[ GetParameterInt("theTypeOfGraphSelect") ] )
+'		strBarName = "g" & aTypeOfGraph[ GetParameterInt("theTypeOfGraphSelect") ] & "_" & aTypeOfBar[ GetParameterInt("theTypeOfBarSelect") ]
+		this.ScriptPluginInstance.SetParameterString( "theTypeOfBar", aTypeOfBar[ GetParameterInt("theTypeOfBarSelect") ] )
 	End If
 	
 '	If parameterName = "theGroupGap" Or parameterName = "theElementGap" Then
@@ -196,7 +206,6 @@ Sub OnExecAction(buttonId As Integer)
 		' create geometry
 		deleteGeometry()
 		deleteChildren()
-		Scene.dbgOutput(1, strDebugLocation, "... button 11 pressed ...")
 		createGeometry()
 	ElseIf buttonID = 21 Then
 		' get global parameter
@@ -225,12 +234,16 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 		If sGraphicDetails.strTypeOfGraph = "UMVPD" Then
 			sGraphicDetails.strTypeOfGraph = "UMVP"
 		End If
+		' theTypeOfBarSelect
 		sGraphicDetails.strTypeOfBar     = GetParameterString( "theTypeOfBar" ) 
 		sGraphicDetails.strGRefBaseName  = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Base"
 		sGraphicDetails.strGRefGroupName = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Group"
-		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_"
+		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
 		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
-	
+		' gaps between groups and bars are constant for all combinations in the redesign 2017
+		sGraphicDetails.fGroupGap        = kGroupGap
+		sGraphicDetails.fElemGap         = kBarGap
+
 		sGraphicDetails = calcGapsAndOffset_UMVerticalX( sGraphicDetails )
 	
 	ElseIf strTypeOfGraphics = "UMHorizontalX" Then
@@ -247,6 +260,8 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 	
 	End If	
 	
+	Scene.dbgOutput(1, strDebugLocation, "[strTypeOfGraph]: [" & sGraphicDetails.strTypeOfGraph & "]")
+	Scene.dbgOutput(1, strDebugLocation, "[strTypeOfBar]: [" & sGraphicDetails.strTypeOfBar & "]")
 	Scene.dbgOutput(1, strDebugLocation, "[strGraphicName]: [" & sGraphicDetails.strGraphicName & "]")
 	Scene.dbgOutput(1, strDebugLocation, "[strGRefBaseName]: [" & sGraphicDetails.strGRefBaseName & "]")
 	Scene.dbgOutput(1, strDebugLocation, "[strGRefGroupName]: [" & sGraphicDetails.strGRefGroupName & "]")
@@ -259,6 +274,22 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 	Scene.dbgOutput(1, strDebugLocation, "[blnValidated]: [" & sGraphicDetails.blnValidated & "]")
 
 	Scene.dbgOutput(1, strDebugLocation, "reading geometry details .DONE.")
+
+
+'Structure structGraphicDetails
+'	strTypeOfGraph   As String
+'	strTypeOfBar     As String
+'	strGraphicName   As String
+'	strGRefBaseName  As String
+'	strGRefGroupName As String
+'	strGRefBarName   As String
+'	strNumBars       As String
+'	fGroupGap        As Double
+'	fElemGap         As Double
+'	fElemWidth       As Double
+'	fXOffset         As Double
+'	blnValidated     As Boolean
+'End Structure
 	
 End Sub
 '-------------------------------------------------------------------------------
@@ -270,12 +301,6 @@ Sub createGeometry()
 
 	' get global parameter
 	sGlobalParameter = (Scene.structGlobalParameter) Scene.Map["sGlobalParameter"]
-'	' get element base name
-'	strEleBaseName = "GEOM*ZDFWahlen_v3/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGeometryDetails.strBarBaseName & "_Base"
-'	' get element group name
-'	strEleGroupName = "GEOM*ZDFWahlen_v3/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGeometryDetails.strBarBaseName & "_Group"
-'	' get bar base postfix
-'	strPostfix = getBarBasePostfix( sGeometryDetails.strNumBars )
 	
 	' moHack: read theTypeOfBar
 	sGraphicDetails.strTypeOfGraph = GetParameterString( "theTypeOfGraph" ) 
@@ -371,6 +396,7 @@ Sub createGeometry_UMVerticalX()
 			tmpString = sGlobalParameter.strGlobGeomSourcePath & sGraphicDetails.strGraphicName
 			Scene.dbgOutput(1, strDebugLocation, "[tmpString]: [" & tmpString & "]")
 			contElement.CreateGeometry( sGraphicDetails.strGRefBarName ) 
+'			contElement.CreateGeometry( sGraphicDetails.strTypeOfBar ) 
 '			System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
 			' set position
 			If iElem > 1 Then
@@ -414,14 +440,13 @@ End Sub
 Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails ) As structGraphicDetails
 	Dim strDebugLocation As String = strScriptName & "calcGapsAndOffset_UMVerticalX():"
 	Dim strErrorTitle, strErrorMessage As String
-	Dim strPostfix, tmpString As String
+	Dim tmpString As String
 	Dim aNumBars As Array[String]
 	Dim iGroup, numGroups, numBars, numBarsInGroup As Integer
 	Dim fTotalWidth As Double
 
 	Scene.dbgOutput(1, strDebugLocation, "[sGraphicDetails.strNumBars]: [" & sGraphicDetails.strNumBars & "]")
 	
-	strPostfix = ""
 	tmpString = sGraphicDetails.strNumBars
 	tmpString.Split("#", aNumBars)
 
@@ -443,25 +468,13 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 	
 		If numBars <= knMaxTotalBars Then
 			If numBars >= 1 And numBars <= 5 Then
-				strPostfix = "1-5b"
 				sGraphicDetails.fElemWidth = kBarWidth_1_5
-				sGraphicDetails.fGroupGap  = kGroupGap
-				sGraphicDetails.fElemGap   = kBarGap
 			ElseIf numBars >= 6 And numBars <= 7 Then
-				strPostfix = "6-7b"
 				sGraphicDetails.fElemWidth = kBarWidth_6_7
-				sGraphicDetails.fGroupGap  = kGroupGap
-				sGraphicDetails.fElemGap   = kBarGap
 			ElseIf numBars = 8 Then
-				strPostfix = "8b"
 				sGraphicDetails.fElemWidth = kBarWidth_8
-				sGraphicDetails.fGroupGap  = kGroupGap
-				sGraphicDetails.fElemGap   = kBarGap
 			ElseIf numBars >= 9 And numBars <= knMaxTotalBars Then
-				strPostfix = "9b"
 				sGraphicDetails.fElemWidth = kBarWidth_9
-				sGraphicDetails.fGroupGap  = kGroupGap
-				sGraphicDetails.fElemGap   = kBarGap
 			Else
 				strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
 				strErrorMessage = "wrong number of total bars: [" & numBars & "]\n"
@@ -469,35 +482,28 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 				Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
 			End If
 			
-			If strPostfix <> "" Then
-				sGraphicDetails.strGRefBarName = sGraphicDetails.strGRefBarName & strPostfix
-				
-				
-'				fTotalWidth = sGraphicDetails.fElemWidth * (numBars + (numGroups - 1)*sGraphicDetails.fGroupGap + (numBars - numGroups)*sGraphicDetails.fElemGap )
 println strDebugLocation & "[numGroups]: [" & numGroups & "]............................"
 println strDebugLocation & "[numBars]: [" & numBars & "]............................"
 println strDebugLocation & "[fElemWidth]: [" & sGraphicDetails.fElemWidth & "]............................"
 println strDebugLocation & "[fGroupGap]: [" & sGraphicDetails.fGroupGap & "]............................"
 println strDebugLocation & "[fElemGap]: [" & sGraphicDetails.fElemGap & "]............................"
 				
-				fTotalWidth = sGraphicDetails.fElemWidth * numBars
+			fTotalWidth = sGraphicDetails.fElemWidth * numBars
 println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars..........................."
-				fTotalWidth = fTotalWidth + (numGroups - 1) * sGraphicDetails.fGroupGap
+			fTotalWidth = fTotalWidth + (numGroups - 1) * sGraphicDetails.fGroupGap
 println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+groups...................."
-				fTotalWidth = fTotalWidth + (numBars - numGroups - 1) * sGraphicDetails.fElemGap
+			fTotalWidth = fTotalWidth + (numBars - numGroups - 1) * sGraphicDetails.fElemGap
 				
 
-				Scene.dbgOutput(1, strDebugLocation, "[fTotalWidth]: [" & fTotalWidth & "]")
+			Scene.dbgOutput(1, strDebugLocation, "[fTotalWidth]: [" & fTotalWidth & "]")
 println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "]............................"
 				
-'				sGraphicDetails.fXOffset = 0.5 * (kMaxWidth - fTotalWidth) + kBaseOffsetX
-				sGraphicDetails.fXOffset = 0.0
+'			sGraphicDetails.fXOffset = 0.5 * (kMaxWidth - fTotalWidth) + kBaseOffsetX
+			sGraphicDetails.fXOffset = 0.0
 println strDebugLocation & "[fXOffset]: [" & sGraphicDetails.fXOffset & "]............................"
 
-				sGraphicDetails.blnValidated = TRUE
-			Else
-				sGraphicDetails.blnValidated = FALSE
-			End If
+			sGraphicDetails.blnValidated = TRUE
+
 		Else
 			strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
 			strErrorMessage = "current number of total bars: [" & numBars & "]\n"
@@ -743,6 +749,8 @@ End Sub
 '
 '
 '-------------------------------------------------------------------------------
+
+
 
 
 

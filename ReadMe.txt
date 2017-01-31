@@ -6,6 +6,12 @@ ToDo:
 - ANIMATIONS!!!
 - PLAYOUT SCRIPTS!!!
 
+2017.01.31: 
+- use correct selected type of bar to create graph
+- set correct gap between groups for 1-5b and 6-7b
+  currently only one geometry prototype is available for testing !!!!
+  --> set the same bar width for all type of bars.
+  
 2017.01.30: 
 - use correct values for gap between bars and groups
 - fix selecting the correct bar type
