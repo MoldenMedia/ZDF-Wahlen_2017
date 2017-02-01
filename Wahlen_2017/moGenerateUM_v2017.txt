@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "01.02.2017"
+Dim theDateModified     As String = "31.01.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -49,7 +49,6 @@ Dim kBarWidth_6_7    As Double = 170.0
 Dim kBarWidth_8      As Double = 170.0
 Dim kBarWidth_9      As Double = 170.0
 
-' 154 420
 
 Dim kBarWidth_2_3  As Double = 25.0
 Dim kBarGap_2_3    As Double =  0.08
@@ -240,7 +239,6 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 		sGraphicDetails.strGRefBaseName  = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Base"
 		sGraphicDetails.strGRefGroupName = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Group"
 		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
-
 		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
 		' gaps between groups and bars are constant for all combinations in the redesign 2017
 		sGraphicDetails.fGroupGap        = kGroupGap
@@ -352,13 +350,13 @@ End Sub
 '
 Sub createGeometry_UMVerticalX()
 	Dim strDebugLocation As String = strScriptName & "createGeometry_UMVerticalX():"
-	Dim contGeomBase, contGroup, contElement, contBanner As Container
+	Dim contGeomBase, contGroup, contElement As Container
 	Dim aContElement As Array [Container]
 	Dim iGroup, iElem As Integer
 	Dim aString As Array[String]
 	Dim tmpString, strPostfix, strBarReferenceName As String
 	Dim strEleBaseName, strEleGroupName As String
-	Dim fGroupPosX, fElemPosX, fOffsetX, fBannerWidth As Double
+	Dim fGroupPosX, fElemPosX, fOffsetX As Double
 	Dim vBoundingBox As Vertex
 	
 	Scene.dbgOutput(1, strDebugLocation, "create .START.")
@@ -379,20 +377,10 @@ Sub createGeometry_UMVerticalX()
 		contGroup.Name = strGroupBaseName & iGroup
 		contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName ) 
 		System.SendCommand( "#" & contGroup.vizID & "*GEOM SPLIT" )
-
-' modified 01.02.2017
-		contBanner = contGroup.FindSubContainer("$objBanner")
-		fBannerWidth = (CInt(aString[iGroup-1])-1)*kBarGap + CInt(aString[iGroup-1])*sGraphicDetails.fElemWidth
-		' transfer pixel to viz units 420 viz units equal 154 pixel
-		' --> factor: 154/420=0.36667
-		fBannerWidth = 0.36667*fBannerWidth
-		contBanner.Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
-
 		' set position
 		If iGroup = 1 Then
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
 			contGroup.Position.X = fGroupPosX
-			
 		ElseIf iGroup > 1 Then
 ' modified 30.01.2017
 '			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemWidth+sGraphicDetails.fElemGap) - sGraphicDetails.fElemGap
@@ -566,15 +554,15 @@ println "..... [sGraphicDetails.fXOffset]: ["	& sGraphicDetails.fXOffset & "]"
 		contGroup = contGeomBase.FindSubContainer("$TRANS").AddContainer(TL_DOWN)
 		contGroup.Name = strGroupBaseName & iGroup
 		
-'		If CInt( aString[iGroup-1] ) <= 4 Then
-'			contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName & "_" & aString[iGroup-1] & "b" ) 
-'		Else
-'			contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName & "_4b" ) 
-'		End If
+		If CInt( aString[iGroup-1] ) <= 4 Then
+			contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName & "_" & aString[iGroup-1] & "b" ) 
+		Else
+			contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName & "_4b" ) 
+		End If
 		
 		System.SendCommand( "#" & contGroup.vizID & "*GEOM SPLIT" )
 println "..... [strGRefGroupName]: ["	& sGraphicDetails.strGRefGroupName & "]"
-		' set position and set banner width
+		' set position
 		If iGroup = 1 Then
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosY & "]")
 			contGroup.Position.Y = fGroupPosY
@@ -761,7 +749,6 @@ End Sub
 '
 '
 '-------------------------------------------------------------------------------
-
 
 
 

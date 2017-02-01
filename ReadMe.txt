@@ -1,10 +1,13 @@
 ToDo:
-- set correct gap between groups for 1-5b and 6-7b
-- calculate the width of the label background
+- banner width not calculated correctly
 - center graphics on screen
 
 - ANIMATIONS!!!
 - PLAYOUT SCRIPTS!!!
+
+2017.02.01:
+- set correct gap between groups for 1-5b and 6-7b
+- calculate the width of the label background -> first draft
 
 2017.01.31: 
 - use correct selected type of bar to create graph
