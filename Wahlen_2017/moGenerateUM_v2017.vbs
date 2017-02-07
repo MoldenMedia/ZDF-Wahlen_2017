@@ -352,7 +352,7 @@ End Sub
 '
 Sub createGeometry_UMVerticalX()
 	Dim strDebugLocation As String = strScriptName & "createGeometry_UMVerticalX():"
-	Dim contGeomBase, contGroup, contElement, contBanner As Container
+	Dim contGeomBase, contGroup, contElement, contGroupGfxEle As Container
 	Dim aContElement As Array [Container]
 	Dim iGroup, iElem As Integer
 	Dim aString As Array[String]
@@ -380,13 +380,14 @@ Sub createGeometry_UMVerticalX()
 		contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName ) 
 		System.SendCommand( "#" & contGroup.vizID & "*GEOM SPLIT" )
 
-' modified 01.02.2017
-		contBanner = contGroup.FindSubContainer("$objBanner")
+' modified 01.02.2017, 07.02.2017
+		contGroupGfxEle = contGroup.FindSubContainer("$GFX_ELE")
 		fBannerWidth = (CInt(aString[iGroup-1])-1)*kBarGap + CInt(aString[iGroup-1])*sGraphicDetails.fElemWidth
 		' transfer pixel to viz units 420 viz units equal 154 pixel
 		' --> factor: 154/420=0.36667
 		fBannerWidth = 0.36667*fBannerWidth
-		contBanner.Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+		contGroupGfxEle.FindSubContainer("$objBanner").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+		contGroupGfxEle.FindSubContainer("$objGroupBG").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
 
 		' set position
 		If iGroup = 1 Then

@@ -1,8 +1,8 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "24.01.2017"
-Dim theContactDetails   As String = "thomas@molden.de"
+Dim theDateModified     As String = "07.02.2017"
+Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
 Dim theProject          As String = "moElectionSceneStructure (viz3)"
@@ -25,7 +25,7 @@ Structure structGlobalParameter
 	strGlobMaterialPath       As String
 	dblMaxVizValueHRWB        As Double
 	dblMaxVizValueHRPZ        As Double
-	dblMaxVizValueHRPZD        As Double
+	dblMaxVizValueHRPZD       As Double
 	dblMaxVizValueHRPD        As Double
 	dblMaxVizValueHRPG        As Double
 	dblMaxVizValueHRSV        As Double
@@ -231,6 +231,13 @@ Sub _updateScene_assignLabel_3(contLabelBase As Container, strTypeOfGraphics As 
 	contWork2 = contLabelBase.FindSubContainer( kTextLabel2SubPath )
 	contWork3 = contLabelBase.FindSubContainer( kTextLabel3SubPath )
 
+dbgOutput(1, strDebugLocation, "[strLabel1]: [" & strLabel1 & "][strLabel2]: [" & strLabel2 & "] [strLabel3]: [" & strLabel3 & "]***********")
+dbgOutput(1, strDebugLocation, "[contLabelBase.name]: [" & contLabelBase.name & "]***********")
+dbgOutput(1, strDebugLocation, "[contWork1.name]: [" & contWork1.name & "]***********")
+dbgOutput(1, strDebugLocation, "[contWork2.name]: [" & contWork2.name & "]***********")
+dbgOutput(1, strDebugLocation, "[contWork3.name]: [" & contWork3.name & "]***********")
+
+
 	If strLabel3 <> "" Then
 		contWork1.Active = TRUE
 		contWork2.Active = TRUE
@@ -255,14 +262,15 @@ Sub _updateScene_assignLabel_3(contLabelBase As Container, strTypeOfGraphics As 
 		contWork3.Active = FALSE
 	End If
 	
+'07.02.2017: not required anymore
 	' set autofollow details
-	If dblValue >= 0 Then 
-		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterInt( "Y_PREV_CENTER", 0 )
-		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterBool( "PLUSS", FALSE )
-	ElseIf dblValue < 0 Then
-		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterInt( "Y_PREV_CENTER", 2 )
-		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterBool( "PLUSS", TRUE )
-	End If
+'	If dblValue >= 0 Then 
+'		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterInt( "Y_PREV_CENTER", 0 )
+'		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterBool( "PLUSS", FALSE )
+'	ElseIf dblValue < 0 Then
+'		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterInt( "Y_PREV_CENTER", 2 )
+'		contLabelBase.GetFunctionPluginInstance("Autofollow").SetParameterBool( "PLUSS", TRUE )
+'	End If
 	' *FUNCTION*Autofollow*Y_PREV_CENTER SET 1
 	' Autofollow*PLUSS SET 1
 	
@@ -1112,4 +1120,5 @@ End Sub
 Function GetHRSVK2_Variant() as Integer
 	GetHRSVK2_Variant = iHRSVK2_Variant
 End Function
+
 
