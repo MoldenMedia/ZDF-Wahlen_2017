@@ -2,8 +2,11 @@ ToDo:
 - banner width not calculated correctly
 - center graphics on screen
 
-- ANIMATIONS!!!
 - PLAYOUT SCRIPTS!!!
+- ANMATIONS!!!
+
+2017.02.07:
+- fixed animations for gUMVB_6-7b
 
 2017.02.01:
 - set correct gap between groups for 1-5b and 6-7b

@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "01.02.2017"
+Dim theDateModified     As String = "07.02.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -140,10 +140,10 @@ Sub OnInitParameters()
 	RegisterParameterString("theTypeOfBar", "type of bar [gUMVP_8b|...]:", "gUMVP_8b", 25, 55, "")
 	RegisterRadioButton("theTypeOfBarSelect", "type of bar select:", 0, aTypeOfBar)
 	RegisterRadioButton("theTypeOfGraphSelect", "type of graph select:", 0, aTypeOfGraph)
-	RegisterParameterDouble("theGroupGap", "distance between groups [8.0]:", 8.0, 0.0, 300.0)
+'	RegisterParameterDouble("theGroupGap", "distance between groups [8.0]:", 8.0, 0.0, 300.0)
 	RegisterParameterString("theNumBars", "number of bars in groups [2#3#3]:", "2#4", 25, 55, "")
-	RegisterParameterDouble("theElementGap", "distance between elements [2.0]:", 2.0, 0.0, 100.0)
-	RegisterParameterDouble("theElementWidth", "width of elements [20.0]:", 20.0, 0.0, 100.0)
+'	RegisterParameterDouble("theElementGap", "distance between elements [2.0]:", 2.0, 0.0, 100.0)
+'	RegisterParameterDouble("theElementWidth", "width of elements [20.0]:", 20.0, 0.0, 100.0)
 	
 '	aUpdateState.Clear
 '	aUpdateState.push("ON")
