@@ -8,6 +8,12 @@ ToDo:
 - ANMATIONS!!!
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.11:
+moTransitionGfx_v2017.vbs:
+- started analyzing transition Script
+- started to adapt transition animation of base elements
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.07:
 moGenerateUM_v2017.vbs
 - fixed animations for gUMVB_6-7b
