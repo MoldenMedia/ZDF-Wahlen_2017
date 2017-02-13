@@ -1,11 +1,25 @@
 ToDo:
-- banner width not calculated correctly
-- group background width similar to banner width
--> calculation needs to take the bar width into account!
 - center graphics on screen
+- calculate distance between groups!!
 
 - PLAYOUT SCRIPTS!!!
 - ANMATIONS!!!
+
+NOTE:
+Noggi Width  = 736.5 is 1920 pixel screen size
+Noggi Height = 414.2 is 1080 pixel screen size
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.13:
+scene - Geometry:
+- updated geometry gUMVP_Base
+- updated geometry gUMVP_Group
+- updated geometry gUMVP_1-5b
+
+moGenerateUM_v2017.vbs
+- fixed calculation for bargaps
+- added kVizToPixelFactor
+- fixed calculation of banner and background Width
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.11:

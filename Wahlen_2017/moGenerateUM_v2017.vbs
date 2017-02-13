@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "07.02.2017"
+Dim theDateModified     As String = "13.02.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -25,11 +25,16 @@ Dim aTypeOfGraph As Array[String]
 Dim knMaxGroups    As Integer = 20 ' max number of groups set to 20!
 Dim knMaxTotalBars As Integer = 50 ' max number of total bars set to 50!
 
+' NOTE:
+' Noggi Width  = 736.5 is 1920 pixel screen size -> factor 2.6069
+' Noggi Height = 414.2 is 1080 pixel screen size -> factor 2.6074
+Dim kVizToPixelRatio = 1/2.6072
+
 ' basic dimensions in pixel
-Dim kBaseOffsetX   As Double =   0.0  ' offset from right corner :   91 pixel
-Dim kMaxWidth      As Double = 142.0  ' maximal diagram width    : 1738 pixel
-Dim kBarGap        As Double =  80.0  ' gap between bars         :   25 pixel
-Dim kGroupGap      As Double = 190.0  ' gap between groups       :   80 pixel
+Dim kBaseOffsetX   As Double =    0.0  ' offset from right corner :   91 pixel
+Dim kMaxWidth      As Double = 1738.0  ' maximal diagram width    : 1738 pixel
+Dim kVBarGap       As Double =   25.0  ' gap between bars         :   25 pixel
+Dim kVGroupGap     As Double =   80.0  ' gap between groups       :   80 pixel
 
 ' bar width deimensions for Hochrechnung
 Dim kHRBarWidth_1_5  As Double = 245
@@ -39,33 +44,28 @@ Dim kHRBarWidth_9    As Double = 170
 
 ' bar width deimensions for SVZ and NQR
 ' use this values when bar prototypes had been built 
-'Dim kBarWidth_1_5    As Double = 245.0
-'Dim kBarWidth_6_7    As Double = 245.0
-'Dim kBarWidth_8      As Double = 170.0
-'Dim kBarWidth_9      As Double = 164.0
-' these values are for temporary testing only !!!!!!!!!!!!!!!!!!!!!!
-Dim kBarWidth_1_5    As Double = 170.0
-Dim kBarWidth_6_7    As Double = 170.0
-Dim kBarWidth_8      As Double = 170.0
-Dim kBarWidth_9      As Double = 170.0
+Dim kVBarWidth_1_5   As Double = 245.0
+Dim kVBarWidth_6_7   As Double = 245.0
+Dim kVBarWidth_8     As Double = 170.0
+Dim kVBarWidth_9     As Double = 164.0
 
-' 154 420
-
-Dim kBarWidth_2_3  As Double = 25.0
-Dim kBarGap_2_3    As Double =  0.08
-Dim kGroupGap_2_3  As Double =  0.40
-'Dim kBarGap_2_3    As Double =   7.0 units
-'Dim kGroupGap_2_3  As Double =  35.0 units
-'Dim kBarGap_2_3    As Double =  0.1
-'Dim kGroupGap_2_3  As Double =  0.5
-
-Dim kBarWidth_4_6  As Double = 21.0
-
-Dim kBarWidth_7    As Double = 18.0
-Dim kBarGap_7      As Double =  0.05
-Dim kGroupGap_7    As Double =  0.30
-
-Dim kBarWidth_8_12 As Double = 12.0
+'' 154 420
+'
+'Dim kBarWidth_2_3  As Double = 25.0
+'Dim kBarGap_2_3    As Double =  0.08
+'Dim kGroupGap_2_3  As Double =  0.40
+''Dim kBarGap_2_3    As Double =   7.0 units
+''Dim kGroupGap_2_3  As Double =  35.0 units
+''Dim kBarGap_2_3    As Double =  0.1
+''Dim kGroupGap_2_3  As Double =  0.5
+'
+'Dim kBarWidth_4_6  As Double = 21.0
+'
+'Dim kBarWidth_7    As Double = 18.0
+'Dim kBarGap_7      As Double =  0.05
+'Dim kGroupGap_7    As Double =  0.30
+'
+'Dim kBarWidth_8_12 As Double = 12.0
 'Dim kBarWidth_8_12 As Double = 75.0
 
 Dim kHBarWidth      As Double = 16.0
@@ -76,6 +76,8 @@ Dim knHMaxTotalBars As Integer = 20
 '-------------------------------------------------------------------------------
 ' STRUCTURE definitions
 '-------------------------------------------------------------------------------
+' fGroupGap and fElemGap are constant and not required for the 2017
+' we leave it for furture changes 
 Structure structGraphicDetails
 	strTypeOfGraph   As String
 	strTypeOfBar     As String
@@ -84,7 +86,7 @@ Structure structGraphicDetails
 	strGRefGroupName As String
 	strGRefBarName   As String
 	strNumBars       As String
-	fGroupGap        As Double
+	fGroupGap        As Double 
 	fElemGap         As Double
 	fElemWidth       As Double
 	fXOffset         As Double
@@ -243,8 +245,8 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 
 		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
 		' gaps between groups and bars are constant for all combinations in the redesign 2017
-		sGraphicDetails.fGroupGap        = kGroupGap
-		sGraphicDetails.fElemGap         = kBarGap
+		sGraphicDetails.fGroupGap        = kVGroupGap ' * kVizToPixelRatio
+		sGraphicDetails.fElemGap         = kVBarGap ' * kVizToPixelRatio
 
 		sGraphicDetails = calcGapsAndOffset_UMVerticalX( sGraphicDetails )
 	
@@ -382,24 +384,24 @@ Sub createGeometry_UMVerticalX()
 
 ' modified 01.02.2017, 07.02.2017
 		contGroupGfxEle = contGroup.FindSubContainer("$GFX_ELE")
-		fBannerWidth = (CInt(aString[iGroup-1])-1)*kBarGap + CInt(aString[iGroup-1])*sGraphicDetails.fElemWidth
+		fBannerWidth = (CInt(aString[iGroup-1])-1)*kVBarGap + CInt(aString[iGroup-1])*sGraphicDetails.fElemWidth
 		' transfer pixel to viz units 420 viz units equal 154 pixel
 		' --> factor: 154/420=0.36667
-		fBannerWidth = 0.36667*fBannerWidth
+		fBannerWidth = fBannerWidth * kVizToPixelRatio
 		contGroupGfxEle.FindSubContainer("$objBanner").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
 		contGroupGfxEle.FindSubContainer("$objGroupBG").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
 
 		' set position
 		If iGroup = 1 Then
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
-			contGroup.Position.X = fGroupPosX
+			contGroup.Position.X = fGroupPosX * kVizToPixelRatio
 			
 		ElseIf iGroup > 1 Then
 ' modified 30.01.2017
 '			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemWidth+sGraphicDetails.fElemGap) - sGraphicDetails.fElemGap
 			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemGap) - sGraphicDetails.fElemWidth
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
-			contGroup.Position.X = fGroupPosX
+			contGroup.Position.X = fGroupPosX  * kVizToPixelRatio
 		End If
 		' create elements in group
 		For iElem = 1 To CInt(aString[iGroup-1])
@@ -412,12 +414,15 @@ Sub createGeometry_UMVerticalX()
 '			contElement.CreateGeometry( sGraphicDetails.strTypeOfBar ) 
 '			System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
 			' set position
-			If iElem > 1 Then
-' modified 30.01.2017
-'				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth )
-				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap )
+			If iElem = 1 Then
+				fElemPosX = 0.5*sGraphicDetails.fElemWidth
 				Scene.dbgOutput(1, strDebugLocation, "[fOffsetX]: [" & fElemPosX & "]")
-				contElement.Position.X = fElemPosX
+				contElement.Position.X = fElemPosX * kVizToPixelRatio
+			ElseIf iElem > 1 Then
+' modified 30.01.2017
+				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth ) + 0.5*sGraphicDetails.fElemWidth
+				Scene.dbgOutput(1, strDebugLocation, "[fOffsetX]: [" & fElemPosX & "]")
+				contElement.Position.X = fElemPosX * kVizToPixelRatio
 			End If
 		Next
 		' set group label position
@@ -464,10 +469,10 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 	tmpString.Split("#", aNumBars)
 
 ' bar width deimensions for SVZ and NQR
-'Dim kBarWidth_1_5    As Double = 245.0
-'Dim kBarWidth_6_7    As Double = 245.0
-'Dim kBarWidth_8      As Double = 170.0
-'Dim kBarWidth_9      As Double = 164.0
+'Dim kVBarWidth_1_5    As Double = 245.0
+'Dim kVBarWidth_6_7    As Double = 245.0
+'Dim kVBarWidth_8      As Double = 170.0
+'Dim kVBarWidth_9      As Double = 164.0
 	
 ' no limitation of maxnumber groups requested
 	If aNumBars.UBound <= knMaxGroups Then
@@ -481,13 +486,13 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 	
 		If numBars <= knMaxTotalBars Then
 			If numBars >= 1 And numBars <= 5 Then
-				sGraphicDetails.fElemWidth = kBarWidth_1_5
+				sGraphicDetails.fElemWidth = kVBarWidth_1_5
 			ElseIf numBars >= 6 And numBars <= 7 Then
-				sGraphicDetails.fElemWidth = kBarWidth_6_7
+				sGraphicDetails.fElemWidth = kVBarWidth_6_7
 			ElseIf numBars = 8 Then
-				sGraphicDetails.fElemWidth = kBarWidth_8
+				sGraphicDetails.fElemWidth = kVBarWidth_8
 			ElseIf numBars >= 9 And numBars <= knMaxTotalBars Then
-				sGraphicDetails.fElemWidth = kBarWidth_9
+				sGraphicDetails.fElemWidth = kVBarWidth_9
 			Else
 				strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
 				strErrorMessage = "wrong number of total bars: [" & numBars & "]\n"
@@ -503,13 +508,18 @@ println strDebugLocation & "[fElemGap]: [" & sGraphicDetails.fElemGap & "]......
 				
 			fTotalWidth = sGraphicDetails.fElemWidth * numBars
 println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars..........................."
+			fTotalWidth = fTotalWidth + (numBars-1) * sGraphicDetails.fElemGap
+println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+bargap..........................."
+
+If numGroups > 1 Then
 			fTotalWidth = fTotalWidth + (numGroups - 1) * sGraphicDetails.fGroupGap
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+groups...................."
-			fTotalWidth = fTotalWidth + (numBars - numGroups - 1) * sGraphicDetails.fElemGap
-				
+'			fTotalWidth = fTotalWidth + numGroups * sGraphicDetails.fGroupGap
+println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+bargap+groups...................."
+'			fTotalWidth = fTotalWidth + (numBars - numGroups - 1) * sGraphicDetails.fElemGap
+End If				
 
 			Scene.dbgOutput(1, strDebugLocation, "[fTotalWidth]: [" & fTotalWidth & "]")
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "]............................"
+'println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "]............................"
 				
 '			sGraphicDetails.fXOffset = 0.5 * (kMaxWidth - fTotalWidth) + kBaseOffsetX
 			sGraphicDetails.fXOffset = 0.0
@@ -762,6 +772,7 @@ End Sub
 '
 '
 '-------------------------------------------------------------------------------
+
 
 
 
