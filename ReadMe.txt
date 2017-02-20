@@ -1,6 +1,9 @@
 ToDo:
+- create gHRPG graphics
+- adapt moPlayoutHRPX_v2017.vbs script
+
+General:
 - center graphics on screen
-- calculate distance between groups!!
 
 - PLAYOUT SCRIPTS!!!
 - ANMATIONS!!!
@@ -8,6 +11,54 @@ ToDo:
 NOTE:
 Noggi Width  = 736.5 is 1920 pixel screen size
 Noggi Height = 414.2 is 1080 pixel screen size
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.20:
+scene - Geometry:
+- updated gHRVP_1-5b
+- updated gHRVP_6-7b
+- updated gHRVP_8b
+- updated gHRVP_9b
+- created gHRPZ_2b ... 9b
+- created gHRPG_1-5b
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.17:
+scene - Geometry:
+- updated headline geometry
+- typo left
+- typo right
+- politbarometer
+
+moPlayoutHRPX_v2017
+- removed all mirror references
+- added kServerMaterialPath
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+2017.02.16:
+scene - Geometry:
+- updated label structure in geometry gUMVP_1-5b
+- updated label structure in geometry gUMVP_6-7b
+- updated label structure in geometry gUMVP_8b
+- updated label structure in geometry gUMVP_9b
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.15:
+scene - Geometry:
+- updated geometry gUMVP_6-7b
+- updated geometry gUMVP_8b
+- updated geometry gUMVP_9b
+
+moPlayoutUMVX_v2017.vbs
+- testing
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.14:
+moGenerateUM_v2017.vbs
+- calculate distance between groups
+- cleanup Script
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.13:
