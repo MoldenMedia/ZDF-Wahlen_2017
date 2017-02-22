@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "17.02.2017"
+Dim theDateModified     As String = "22.02.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -310,6 +310,10 @@ Sub readGraphicsData()
 		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	End If
 
+' TEMPORARY OVERWRITE 22.02.2017
+' set to max height of noggi!!
+fMaxVizValue = 100.0
+
 	nVisibleLabel = nMaxLabel
 
 	Scene.dbgOutput(1, strDebugLocation, "[fMaxVizValue] [fMaxBarValue]: ["	& fMaxVizValue & "] [" & fMaxBarValue & "]" )
@@ -418,23 +422,6 @@ Sub updateScene_assignData()
 
 			' calculate and set animation value separate for each variant [HRPZ|HRPD|HRPG]
 			If sGraphicsData.strTypeOfGraphic = "HRPZ" Then
-'				' calculate and set animation value
-'				dblValue = CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
-''				dblValue = dblValue * fMaxVizValue / fMaxBarValue
-'				fMinBarValue = sGraphicsData.aGroup[iGroup].dblMinValue
-'				fMaxBarValue = sGraphicsData.aGroup[iGroup].dblMaxValue
-'				dblValue = fMinVizValue + (dblValue - fMinBarValue) * (fMaxVizValue - fMinVizValue) / (fMaxBarValue - fMinBarValue)
-''println "...... [aValueNum[" & iElement & "]] [dblValue] [fminVizValue] [fMaxVizValue] [fMinBarValue] [fMaxBarValue]: [" & sGraphicsData.aGroup[iGroup].aValueNum[9-iElement] & "] [" & dblValue & "] [" & fminVizValue & "] [" & fMaxVizValue & "] [" & fMinBarValue & "] ["	& fMaxBarValue & "]"
-'				' always show some color
-'				dblValue =  Scene._validateMinBarValue( dblValue, 0.1 )
-'
-'				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-'	
-'				' set text value and labels
-'				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-'
-
-
 				' calculate and set animation value
 				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
 				' always show some color
@@ -447,25 +434,6 @@ Sub updateScene_assignData()
 '		contWork1.FindSubContainer( kTextSubPath ).Geometry.Text = strLabel3
 
 			ElseIf sGraphicsData.strTypeOfGraphic = "HRPD" Then
-'				' calculate and set animation value
-'				dblValue = CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
-'				fMinBarValue = sGraphicsData.aGroup[iGroup].dblMinValue
-'				fMaxBarValue = sGraphicsData.aGroup[iGroup].dblMaxValue
-'				dblValue = dblValue * fMaxVizValue / fMaxBarValue
-''				dblValue = fMinVizValue + (dblValue - fMinBarValue) * (fMaxVizValue - fMinVizValue) / (fMaxBarValue - fMinBarValue)
-''				dblValue = (dblValue - fMinBarValue) * (fMaxVizValue - fMinVizValue) / (fMaxBarValue - fMinBarValue)
-'
-'				' always show some color
-'				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
-'				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-'
-'				' set text value and labels
-'				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-'
-
-
-
-
 				' calculate and set animation value
 'println "DEBUG: [dblScaleFactor] [dblZeroPosY] [sGraphicsData.aGroup[" & iGroup & "].aValueNum[" & iElement & "]]: [" & dblScaleFactor & "] [" & dblZeroPosY & "] [" & sGraphicsData.aGroup[iGroup].aValueNum[iElement] & "]"
 				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
@@ -475,9 +443,21 @@ Sub updateScene_assignData()
 'println "DEBUG: [dblValue]: [" & dblValue & "].."
 
 				' set posY of element
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
+'				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
 
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
+				' set animation keyframe and visibility
+				If dblValue > 0 Then
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = TRUE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
+				ElseIf dblValue < 0 Then         
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = TRUE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
+				Else     
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
+				End If
 
 				' set text value and labels
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
@@ -534,8 +514,15 @@ Sub updateScene_assignData()
 
 			' set element material
 			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath  & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
-			tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
-			contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
+			If sGraphicsData.strTypeOfGraphic = "HRPD" Then
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_pos").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom_pos").Material = tmpMaterial
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_neg").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom_neg").Material = tmpMaterial
+			Else
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
+			End If
 			
 			' add animation index to playout control
 			Scene._PlayoutAnimationAdd( contElement, sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] )
@@ -547,4 +534,5 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
+
 

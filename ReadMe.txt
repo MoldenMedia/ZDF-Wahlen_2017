@@ -13,14 +13,51 @@ Noggi Width  = 736.5 is 1920 pixel screen size
 Noggi Height = 414.2 is 1080 pixel screen size
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.22:
+scene - Geometry:
+- clean up
+- fixed base geometries
+
+- created HRPD_1-5b
+- created gHRPD_2b
+- created gHRPD_3b
+- created gHRPD_4b
+- created gHRPD_5b
+
+moGenerateUM_v2017.vbs
+- reset bar width to UM bar width
+
+moPlayoutHRPX_v2017
+- adapted playout control for HRPD (container path, visibility, animation keyframe)
+- !!! SET MAX VIZ HEIGHT TO 100.00 max height of noggi!!
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.21:
+scene - Geometry:
+- created gHRPG_2b
+- created gHRPG_3b
+- created gHRPG_4b
+- created gHRPG_5b
+- modified HRPG_1-5b -fixed nameing of containers showing arrows
+
+- created HRPZD_1-5b
+- created gHRPZD_2b
+- created gHRPZD_3b
+- created gHRPZD_4b
+- created gHRPZD_5b
+
+moPlayoutHRPX_v2017
+- some cleanup
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.20:
 scene - Geometry:
-- updated gHRVP_1-5b
-- updated gHRVP_6-7b
-- updated gHRVP_8b
-- updated gHRVP_9b
+- updated HRVP_1-5b
+- updated HRVP_6-7b
+- updated HRVP_8b
+- updated HRVP_9b
 - created gHRPZ_2b ... 9b
-- created gHRPG_1-5b
+- created HRPG_1-5b
 
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
