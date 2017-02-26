@@ -1,8 +1,8 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "22.02.2017"
-Dim theContactDetails   As String = "thomas@molden.de"
+Dim theDateModified     As String = "26.02.2017"
+Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
 Dim theProject          As String = "ElectionSceneStructure (Redesign 2017)"
@@ -365,7 +365,14 @@ Scene.dbgOutput(1, strDebugLocation, "[fBannerWidth]: [" & fBannerWidth & "] ...
 Scene.dbgOutput(1, strDebugLocation, "[kVizToPixelRatio]: [" & kVizToPixelRatio & "] ...............kVizToPixelRatio........")
 Scene.dbgOutput(1, strDebugLocation, "[fBannerWidth]: [" & fBannerWidth & "] ...............in viz units........")
 		contGroupGfxEle.FindSubContainer("$objBanner").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
-		contGroupGfxEle.FindSubContainer("$objGroupBG").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+        If sGraphicDetails.strTypeOfGraph = "UMVD" Then
+		' set background for pos and neg panel
+			contGroupGfxEle.FindSubContainer("$objGroupBG_pos").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+			contGroupGfxEle.FindSubContainer("$objGroupBG_neg").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+		Else
+		' set background for all other panel
+			contGroupGfxEle.FindSubContainer("$objGroupBG").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+		End If
 
 		' set position
 		If iGroup = 1 Then

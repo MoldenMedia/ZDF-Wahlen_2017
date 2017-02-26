@@ -1,17 +1,12 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "22.02.2017"
+Dim theDateModified     As String = "26.02.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
 Dim theProject          As String = "moElectionSceneStructure (viz3)"
-Dim theGraphics         As String = "HOCHRECHNUNG: Prozente|Differenzen|Prognose - moPlayoutHRPX_v00"
-
-'-------------------------------------------------------------------------------
-' Erweiterung auf HRPZD 10.12.2010 Ingo Eisenbarth
-'-------------------------------------------------------------------------------
-
+Dim theGraphics         As String = "UMFRAGE: Balken-Bilder - moPlayoutUMVB_v00"
 '-------------------------------------------------------------------------------
 ' global definitions
 '-------------------------------------------------------------------------------
@@ -25,6 +20,13 @@ Dim fMaxVizValue As Double
 Dim fMinBarValue As Double
 Dim fMaxBarValue As Double
 Dim fLabelHeight As Double 
+
+' NOTE:
+' Noggi Width  = 736.5 is 1920 pixel screen size -> factor 2.6069
+' Noggi Height = 414.2 is 1080 pixel screen size -> factor 2.6074
+Dim kHRWBWidth As Double = 265.0    ' 101.65 pixel
+
+Dim kServerMaterialPath As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/material/"
 
 ' container definitions
 Dim contElementPool As Container
@@ -43,24 +45,28 @@ Dim kGroupBaseName           As String = "$G"
 Dim kElementBaseName         As String = "_E"
 
 Dim kTransSubPath            As String = "$TRANS"
-Dim kTextGroupLabelSubPath   As String = "$GROUP_LABEL$TRANS$txt_group"
+Dim kTextGroupLabelSubPath   As String = "$GROUP_LABEL$TRANS$txt_info"
 Dim kDataSubPath             As String = "$DATA"
 
 'Dim kBar1SubPath             As String = "$TRANS$G1_E1$DATA"
 'Dim kBar2SubPath             As String = "$TRANS$G1_E2$DATA"
 
 Dim kBarColoredSubPath       As String = "$obj_geom"
-Dim kArrowsSubPath           As String = "$TENDENZ$ARROWS"
+Dim kArrowSubPath            As String = "$TRANS$ELE_ARROW"
 
 Dim kTextDataSubPath         As String = "$TXT_DATA"
 Dim kTextValueSubPath        As String = "$TXT_VALUE"
+Dim kTextValueDiffSubPath    As String = "$TXT_VALUE_DIFF"
 Dim kTextLabel1SubPath       As String = "$TXT_LABEL_1"
 Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
-Dim kDiffSubPath             As String = "$txt_diff"
+Dim kTextDiffSubPath         As String = "$txt_value_diff"
 
-Dim kServerMaterialPath      As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/material/"
+Dim kImage_front             As String = "$GFX_IMAGE$img_front"
+Dim kImage_shadow            As String = "$GFX_IMAGE$img_shadow"
+Dim kName                    As String = "$GFX_IMAGE$txt_name"
+Dim kParteiLabel             As String = "$GFX_IMAGE$txt_partei"
 
 '-------------------------------------------------------------------------------
 ' contaner definitions
@@ -82,6 +88,7 @@ Structure structGroupData
 	aValueTxt      As Array[String]
 	aDiffNum       As Array[String]
 	aDiffTxt       As Array[String]
+	aImageName     As Array[String]
 	aAnimOrderFlag As Array[String]
 	dblMinValue    As Double
 	dblMaxValue    As Double
@@ -118,23 +125,24 @@ Sub OnInitParameters()
 
 	RegisterInfoText(strInfoText)
 	
-	RegisterParameterString("theTypeOfGraphic", "type of graphic [HRPZ|HRPD|HRPG|HRPZD]:", "HRPZ", 50, 75, "")
-	RegisterParameterString("theElementName", "element name [gUMHP_23]:", "gGenerated", 50, 75, "")
-	RegisterParameterString("theNumElements", "number of elements in groups [2#2#...]:", "7", 25, 55, "")
+	RegisterParameterString("theTypeOfGraphic", "type of graphic [UMVB|UMVBPD]:", "UMVB", 50, 75, "")
+	RegisterParameterString("theElementName", "element name [gUMVB]:", "gGenerated", 50, 75, "")
+	RegisterParameterString("theNumElements", "number of elements in groups [2#2#...]:", "1#1#1", 25, 55, "")
 
-	RegisterParameterString("theGroupLabel", "group label line [gLabel1#gLabel2#...]:", "", 55, 256, "")
-	RegisterParameterString("theLabel1", "label line 1 [lab1lin1|lab2lin1#...]:", "lab1lin1|lab2lin1|lab3lin1|lab4lin1|lab5lin1|lab6lin1|lab7lin1|lab8lin1", 55, 256, "")
-	RegisterParameterString("theLabel2", "label line 2 [CDU/CSU|SPD#...]:", "|||||||", 55, 256, "")
-	RegisterParameterString("theLabel3", "label line 3 [CDU/CSU|SPD#...]:", "|||||||", 55, 256, "")
+	RegisterParameterString("theGroupLabel", "group label line [gLabel1#gLabel2#...]:", "lab1lin1#lab2lin1#lab3lin1", 55, 256, "")
+	RegisterParameterString("theLabel1", "label line 1 [CDU/CSU|SPD#...]:", "v1. name1#v2. name2#v3. name3", 55, 256, "")
+	RegisterParameterString("theLabel2", "label line 2 [CDU/CSU|SPD#...]:", "##", 55, 256, "")
+	RegisterParameterString("theLabel3", "label line 3 [CDU/CSU|SPD#...]:", "##", 55, 256, "")
 
-	RegisterParameterString("theValueNum", "values number [63.5|67.6|...]:", "63.5|57.6|51.23|42.22|33.33|22.22|11.11|5.5", 55, 256, "")
-	RegisterParameterString("theValueTxt", "values formatted [63,5|67,6|...]:", "63,5|57,6|51,2|42,2|33,3|22,22|11,11|5,5", 55, 256, "")
-	RegisterParameterString("theDiffNum", "difference number [-4|3.4|...]:", "-4|-3.4|3.7|1.3|0.1|3.9|-3.6", 55, 256, "")
-	RegisterParameterString("theDiffTxt", "difference formatted [-4,0|3,4|...]:", "-4,0|-3,4|+3,7|+1,3|+0,1|+3,9|-3,6", 55, 256, "")
+	RegisterParameterString("theValueNum", "values number [63.5|67.6|...]:", "63.5#57.6#51.23", 55, 256, "")
+	RegisterParameterString("theValueTxt", "values formatted [63,5|67,6|...]:", "63,5#57,6#51,2", 55, 256, "")
+	RegisterParameterString("theDiffNum", "difference number [-4|3.4|...]:", "-4#-3.4#3.7", 55, 256, "")
+	RegisterParameterString("theDiffTxt", "difference formatted [-5,0|3,4|...]:", "-5,0#-3,4#+3,7", 55, 256, "")
 
-	RegisterParameterString("theAnimOrderFlag", "animation order flags [1|2#...]:", "1|2|3|3|4|5|6|7", 55, 55, "")
-	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu|spd|fdp|linke|oedp|rep|mlpd|dvu", 55, 256, "")
-	RegisterParameterString("theRangeValues", "min/max values [0|45#0|65...]:", "0|0", 25, 55, "")
+	RegisterParameterString("theAnimOrderFlag", "animation order flags [1|2#...]:", "1#2#3", 55, 55, "")
+	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu#spd#fdp", 55, 256, "")
+	RegisterParameterString("theImageName", "Image [image1|image2]:", "merkel#beck#lafontaine", 55, 256, "")
+	RegisterParameterString("theRangeValues", "min/max values [0|45#0|65...]:", "0|0#0|0", 25, 55, "")
 	
 	RegisterPushButton("btAssignValues", "assign values", 11)
 	RegisterInfoText(strInfoText)
@@ -145,6 +153,8 @@ End Sub
 Sub OnInit()
 	Scene.dbgRegisterFunction( strScriptName )
 	
+	sGlobalParameter = (Scene.structGlobalParameter)	Scene.Map["sGlobalParameter"]
+
 	contElementPool = Scene.FindContainer("$ALL$ELEMENT_POOL")
 	contBlenderElementIN  = Scene.FindContainer("$ALL$CONTENT$ELE_PLAYOUT$ELE_ANIMATION$moBLENDER$IN$ELEMENT")
 	contBlenderElementOUT = Scene.FindContainer("$ALL$CONTENT$ELE_PLAYOUT$ELE_ANIMATION$moBLENDER$OUT$ELEMENT")
@@ -172,20 +182,17 @@ Sub readGraphicsData()
 	Dim strTemp As String
 	Dim aGroupLabList, aGroupEleList, aEleLabel1, aEleLabel2, aEleLabel3 As Array[String]
 	Dim aEleMaterial, aEleValueNum, aEleValueTxt, aEleDiffNum, aEleDiffTxt As Array[String]
-	Dim aEleAnimOrder, aEleRangeValues, aStrHelp As Array[String]
+	Dim aEleAnimOrder, aEleImageName, aEleRangeValues, aStrHelp As Array[String]
 	Dim iGroup, nMaxLabel As Integer
+	Dim dblTempValue As Double
 	Dim dblTempMinValue, dblTempMaxValue As Double
-
-	sGlobalParameter = (Scene.structGlobalParameter)	Scene.Map["sGlobalParameter"]
-
-	fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZ 
-	fLabelHeight = sGlobalParameter.dblMaxVizValueHRLabHeight 
 	
 	' get type of graphics
 	sGraphicsData.strTypeOfGraphic = GetParameterString("theTypeOfGraphic")
 	' get group data
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strGroupSeparator, aGroupEleList )
+	
 	strTemp = GetParameterString("theGroupLabel")
 	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aGroupLabList )
@@ -212,6 +219,8 @@ Sub readGraphicsData()
 	strTemp.Split( strGroupSeparator, aEleDiffTxt )
 	strTemp = GetParameterString("theAnimOrderFlag")
 	strTemp.Split( strGroupSeparator, aEleAnimOrder )
+	strTemp = GetParameterString("theImageName")
+	strTemp.Split( strGroupSeparator, aEleImageName )
 	strTemp = GetParameterString("theRangeValues")
 	strTemp.Split( strGroupSeparator, aEleRangeValues )
 
@@ -219,7 +228,6 @@ Sub readGraphicsData()
 	
 	nMaxLabel = 0 
 	fMaxBarValue = 0.0
-	fMinBarValue = 0.0
 	' read group and element details
 	sGraphicsData.aGroup.Clear()
 	For iGroup = 0 To sGraphicsData.nGroups
@@ -236,6 +244,7 @@ Sub readGraphicsData()
 		aEleValueTxt[iGroup].Split( strElementSeparator, sGroupData.aValueTxt )
 		aEleDiffNum[iGroup].Split( strElementSeparator, sGroupData.aDiffNum )
 		aEleDiffTxt[iGroup].Split( strElementSeparator, sGroupData.aDiffTxt )
+		aEleImageName[iGroup].Split( strElementSeparator, sGroupData.aImageName )
 		aEleAnimOrder[iGroup].Split( strElementSeparator, sGroupData.aAnimOrderFlag )
 		aEleRangeValues[iGroup].Split( strElementSeparator, aStrHelp )
 		sGroupData.dblMinValue = CDbl( aStrHelp[0] )
@@ -246,7 +255,6 @@ Sub readGraphicsData()
 		aEleLabel2[iGroup].Substitute("[|]", "", TRUE)
 		aEleLabel3[iGroup].Substitute("[|]", "", TRUE)
 		
-		' get max number of labels
 		If aEleLabel1[iGroup] <> "" And nMaxLabel < 1 Then
 			nMaxLabel = 1
 		End If
@@ -256,19 +264,16 @@ Sub readGraphicsData()
 		If aEleLabel3[iGroup] <> "" And nMaxLabel < 3 Then
 			nMaxLabel = 3
 		End If
+		dblTempValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
+		If dblTempValue > fMaxBarValue Then
+			fMaxBarValue = dblTempValue
+		End If
 		
-'println "[sGroupData.dblMinValue] [sGroupData.dblMaxValue]: ["	& sGroupData.dblMinValue & "] [" & sGroupData.dblMaxValue & "]********************" 
-
-		' get maxDblValue depending on typeOfGraphics [HRPZ|HRPD|HRPG|HRPZD]
+		' get maxDblValue depending on typeOfGraphics [UMPZ|UMPD]
 		If sGroupData.dblMinValue = 0.0 And sGroupData.dblMaxValue = 0.0 Then
 
-			If sGraphicsData.strTypeOfGraphic = "HRPD" Then
-				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aDiffNum )
-				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aDiffNum )
-			Else
-				dblTempMinValue = 0.0
-				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
-			End If
+			dblTempMinValue = 0.0
+			dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
 			If dblTempMaxValue > fMaxBarValue Then
 				fMaxBarValue = dblTempMaxValue
 			End If
@@ -285,7 +290,6 @@ Sub readGraphicsData()
 				fMinBarValue = sGroupData.dblMaxValue
 				fMaxBarValue = sGroupData.dblMinValue
 			End If
-
 		End If
 
 		' add group to graphics
@@ -297,22 +301,9 @@ Sub readGraphicsData()
 		sGraphicsData.aGroup[iGroup].dblMaxValue = fMaxBarValue
 	Next
 
-	' get maxVizValue [HRPZ|HRPD|HRPG|HRPZD]
+	' get maxVizValue 
 	fMinVizValue = 0.0
-	If sGraphicsData.strTypeOfGraphic = "HRPZ" Then
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZ - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
-	ElseIf sGraphicsData.strTypeOfGraphic = "HRPD" Then
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPD
-'		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
-	ElseIf sGraphicsData.strTypeOfGraphic = "HRPG" Then
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPG - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
-	ElseIf sGraphicsData.strTypeOfGraphic = "HRPZD" Then
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
-	End If
-
-' TEMPORARY OVERWRITE 22.02.2017
-' set to max height of noggi!!
-fMaxVizValue = 100.0
+	fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVB - (nMaxlabel)*sGlobalParameter.dblMaxVizValueHRLabHeight
 
 	nVisibleLabel = nMaxLabel
 
@@ -322,11 +313,8 @@ fMaxVizValue = 100.0
 'println "DEBUG: [2*sGlobalParameter.dblMaxVizValueHRLabHeight]: ["	& 2*sGlobalParameter.dblMaxVizValueHRLabHeight & "]" 
 'println "DEBUG: [fMinVizValue] [fMaxVizValue]: ["	& fMinVizValue & "] [" & fMaxVizValue & "]" 
 'println "DEBUG: [fMinRangeValue] [fMaxRangeValue]: ["	& sGraphicsData.aGroup[0].dblMinValue & "] [" & sGraphicsData.aGroup[0].dblMaxValue & "]" 
-''println "DEBUG: [dblScaleFactor] [dblZeroPosY]: ["	& dblScaleFactor & "] [" & dblZeroPosY & "]" 
+'println "DEBUG: [dblScaleFactor] [dblZeroPosY]: ["	& dblScaleFactor & "] [" & dblZeroPosY & "]" 
 'println "DEBUG: [nVisibleLabel]: ["	& nVisibleLabel & "]" 
-'
-
-'	Scene.dbgOutput(1, strDebugLocation, "[sGraphicsData.strTypeOfGraphic] [fMaxVizValue] [fMaxBarValue]: ["	& sGraphicsData.strTypeOfGraphic & "] [" & fMaxVizValue & "] [" & fMaxBarValue & "]" )
 	' print data
 '	dumpData()
 
@@ -355,6 +343,7 @@ Sub dumpData()
 			Scene.dbgOutput(1, strDebugLocation, "[sGraphicsData.aGroup[" & iGroup & "].aValueTxt[" & iElement & "]]: [" & sGraphicsData.aGroup[iGroup].aValueTxt[iElement] & "]")
 			Scene.dbgOutput(1, strDebugLocation, "[sGraphicsData.aGroup[" & iGroup & "].aDiffNum[" & iElement & "]]: [" & sGraphicsData.aGroup[iGroup].aDiffNum[iElement] & "]")
 			Scene.dbgOutput(1, strDebugLocation, "[sGraphicsData.aGroup[" & iGroup & "].aDiffTxt[" & iElement & "]]: [" & sGraphicsData.aGroup[iGroup].aDiffTxt[iElement] & "]")
+			Scene.dbgOutput(1, strDebugLocation, "[sGraphicsData.aGroup[" & iGroup & "].aImagename[" & iElement & "]]: [" & sGraphicsData.aGroup[iGroup].aImagename[iElement] & "]")
 			Scene.dbgOutput(1, strDebugLocation, "[sGraphicsData.aGroup[" & iGroup & "].aAnimOrderFlag[" & iElement & "]]: [" & sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] & "]")
 		Next
 		
@@ -371,7 +360,7 @@ Sub updateScene_assignData()
 	Dim tmpGroupName, tmpElementName As String
 	Dim tmpMaterial As Material
 	Dim cntIdx As Integer
-	Dim dblValue, dblScaleFactor, dblZeroPosY As Double
+	Dim dblValue, dblScaleFactor As Double
 	Dim iGroup, iElement As Integer
 	Dim fMinRange, fMaxRange As Double
 
@@ -384,17 +373,10 @@ Sub updateScene_assignData()
 	fMinRange = sGraphicsData.aGroup[0].dblMinValue
 	fMaxRange = sGraphicsData.aGroup[0].dblMaxValue
 
-	If sGraphicsData.strTypeOfGraphic = "HRPD" Then
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblMaxVizValueHRLabHeight - 2.0*8.0) / ( fMaxRange - fMinRange )
-		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblMaxVizValueHRLabHeight + 8.0 + fMinVizValue
-		' set posY of zero plane
-		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY
-	Else
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - sGlobalParameter.dblMaxVizValueHRLabHeight - 8.0) / ( fMaxRange - fMinRange )
-	End If
+	dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblUMLabHeight - 2.0*7.0) / ( fMaxRange - fMinRange )
 
 'println "DEBUG: ------------------------------------------------"
-'println "DEBUG: [sGlobalParameter.dblMaxVizValueHRLabHeight]: ["	& sGlobalParameter.dblMaxVizValueHRLabHeight & "]" 
+'println "DEBUG: [sGlobalParameter.dblUMLabHeight]: ["	& sGlobalParameter.dblUMLabHeight & "]" 
 'println "DEBUG: [fMinVizValue] [fMaxVizValue]: ["	& fMinVizValue & "] [" & fMaxVizValue & "]" 
 'println "DEBUG: [fMinRangeValue] [fMaxRangeValue]: ["	& fMinRange & "] [" & fMaxRange & "]" 
 'println "DEBUG: [dblScaleFactor] [dblZeroPosY]: ["	& dblScaleFactor & "] [" & dblZeroPosY & "]" 
@@ -410,7 +392,8 @@ Sub updateScene_assignData()
 		contGroup = contBlenderElementIN.FindSubcontainer( kTransSubPath & tmpGroupName )
 		Scene.dbgOutput(1, strDebugLocation, "[tmpGroupName]: [" & tmpGroupName & "]")
 		' update group label
-		contGroup.FindSubcontainer( kTextGroupLabelSubPath ).Geometry.Text = sGraphicsData.aGroup[iGroup].strLabel
+		' !!! group label inside element structure !!!
+'		contGroup.FindSubcontainer( kTextGroupLabelSubPath ).Geometry.Text = sGraphicsData.aGroup[iGroup].strLabel
 		
 		For iElement = 0 To sGraphicsData.aGroup[iGroup].nElements - 1
 			Scene.dbgOutput(1, strDebugLocation, "updating [iElement]: [" & iElement & "] ..................................................")
@@ -420,110 +403,38 @@ Sub updateScene_assignData()
 			contElement = contGroup.FindSubcontainer( kTransSubPath & tmpGroupName & tmpElementName )
 			Scene.dbgOutput(1, strDebugLocation, "[contElement.Name]: [" & contElement.Name & "]")
 
-			' calculate and set animation value separate for each variant [HRPZ|HRPD|HRPG]
-			If sGraphicsData.strTypeOfGraphic = "HRPZ" Then
-				' calculate and set animation value
-				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
-				' always show some color
-				dblValue =  Scene._validateMinBarValue( dblValue, 0.1 )
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-	
+			' calculate and set animation value
+			dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
+			' always show some color
+			dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
+			contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
+
+			If sGraphicsData.strTypeOfGraphic = "UMVBPD" Then
 				' set text value and labels
-				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-				contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kTextValueSubPath & kDiffSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aDiffTxt[iElement]
-'		contWork1.FindSubContainer( kTextSubPath ).Geometry.Text = strLabel3
-
-			ElseIf sGraphicsData.strTypeOfGraphic = "HRPD" Then
-				' calculate and set animation value
-'println "DEBUG: [dblScaleFactor] [dblZeroPosY] [sGraphicsData.aGroup[" & iGroup & "].aValueNum[" & iElement & "]]: [" & dblScaleFactor & "] [" & dblZeroPosY & "] [" & sGraphicsData.aGroup[iGroup].aValueNum[iElement] & "]"
-				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
-'println "DEBUG: [dblValue]: [" & dblValue & "]."
-				' always show some color
-				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
-'println "DEBUG: [dblValue]: [" & dblValue & "].."
-
-				' set posY of element
-'				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
-
-				' set animation keyframe and visibility
-				If dblValue > 0 Then
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = TRUE
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
-				ElseIf dblValue < 0 Then         
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = TRUE
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
-				Else     
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
-				End If
-
-				' set text value and labels
-				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-
-
-			ElseIf sGraphicsData.strTypeOfGraphic = "HRPG" Then
-				' calculate and set animation value
-				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
-				' always show some color
-				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
-
-				' set posY of element
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
-
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-
-				' set text value and labels
-				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-
-				' set tendency arrow visibility
-				dblValue = CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
-				If sGraphicsData.aGroup[iGroup].aDiffTxt[iElement] <> "" Then
-					If dblValue > 0.0 Then
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_pos" ).Active  = TRUE
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neg" ).Active  = FALSE
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neut" ).Active = FALSE
-					ElseIf dblValue < 0.0 Then
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_pos" ).Active  = FALSE
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neg" ).Active  = TRUE
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neut" ).Active = FALSE
-					ElseIf dblValue = 0.0 Then
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_pos" ).Active  = FALSE
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neg" ).Active  = FALSE
-						contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neut" ).Active = TRUE
-					End If
-				Else
-					contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_pos" ).Active  = FALSE
-					contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neg" ).Active  = FALSE
-					contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kArrowsSubPath & "$Arrow_neut" ).Active = FALSE
-				End If
-
-			ElseIf sGraphicsData.strTypeOfGraphic = "HRPZD" Then
-				' calculate and set animation value
-					dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
-				' always show some color
-					dblValue =  Scene._validateMinBarValue( dblValue, 0.1 )
-					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-	
-				' set text value and labels
-					Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-					contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kTextValueSubPath & kDiffSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aDiffTxt[iElement]
-	
-			End If
-
-			' set element material
-			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath  & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
-			If sGraphicsData.strTypeOfGraphic = "HRPD" Then
-				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_pos").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
-				contElement.FindSubContainer("$DATA$obj_geom_pos").Material = tmpMaterial
-				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_neg").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
-				contElement.FindSubContainer("$DATA$obj_geom_neg").Material = tmpMaterial
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath).Active = FALSE
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath).Active = TRUE
+				Scene._updateScene_assignDiffLabel_1( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement] )
 			Else
-				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
-				contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
+				' set text value and labels
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath).Active = TRUE
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath).Active = FALSE
+				Scene._updateScene_assignLabel_1( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
 			End If
 			
+			' set element material
+			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
+			tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+			contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
+			contElement.FindSubContainer("$DATA$obj_geom").FindKeyframeOfObject("k_value").FloatValue = dblValue
+						
+			' set name = 2nd label and party label
+			' !!! group label inside element structure !!!
+			contElement.FindSubContainer( kDataSubPath & kParteiLabel ).Geometry.Text = sGraphicsData.aGroup[iGroup].strLabel 
+'			contElement.FindSubContainer( kDataSubPath & kParteiLabel ).Geometry.Text = sGraphicsData.aGroup[iGroup].aLabel2[iElement] 
+			contElement.FindSubContainer( kDataSubPath & kName ).Geometry.Text = sGraphicsData.aGroup[iGroup].aLabel1[iElement] 
+			' set image
+			contElement.FindSubContainer( kDataSubPath & kImage_front ).CreateTexture( sGlobalParameter.strGlobImagePath & "wahlen/politiker/" & sGraphicsData.aGroup[iGroup].aImageName[iElement] )
+
 			' add animation index to playout control
 			Scene._PlayoutAnimationAdd( contElement, sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] )
 			Scene.dbgOutput(1, strDebugLocation, "[director name] [animOrderFlag]: [" & contElement.Name & "] [" & sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] & "]")
@@ -534,5 +445,6 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
+
 
 

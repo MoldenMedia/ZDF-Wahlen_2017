@@ -11,6 +11,33 @@ General:
 NOTE:
 Noggi Width  = 736.5 is 1920 pixel screen size
 Noggi Height = 414.2 is 1080 pixel screen size
+------------------------------------------------------------------------------
+DONE:
+General     : Headline
+Hochrechnung: HRPZ, HRPD, HRPD, HRPG, HRWB 
+Umfrage     : UMVP, UMVD, UMVB_2x
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.26:
+scene - Geometry:
+- created gUMVD_1-5b
+- created gUMVD_6-7b
+- created gUMVD_8b
+- created gUMVD_9b
+- created gHRWB (Hochrechnung - Wahlbeteiligung)
+- created gUMVB_2x (Umfrage - Balken Bild 2x)
+
+moPlayoutUMVX_v2017
+- adapted playout control for UMVD (container path, visibility, animation keyframe, material)
+
+moPlayoutHRWB_v2017
+- adapted playout control for HRWB (container path, geometries, animation keyframe, material)
+
+moGenerateUM_v2017.vbs
+- set width of pos and neg backgroud panel for UMVD graphs
+
+moPlayoutUMVB_v2017
+- adapted playout control for UMVB (container path, geometries, animation keyframe, material)
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.22:

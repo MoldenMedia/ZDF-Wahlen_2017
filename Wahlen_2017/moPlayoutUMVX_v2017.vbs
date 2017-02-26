@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "16.02.2017"
+Dim theDateModified     As String = "26.02.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -440,22 +440,36 @@ Sub updateScene_assignData()
 			' calculate and set animation value separate for each variant [UMVP|UMVPD]
 			If sGraphicsData.strTypeOfGraphic = "UMVD" Then
 				' calculate and set animation value
-				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
+'println "DEBUG: [dblScaleFactor] [dblZeroPosY] [sGraphicsData.aGroup[" & iGroup & "].aValueNum[" & iElement & "]]: [" & dblScaleFactor & "] [" & dblZeroPosY & "] [" & sGraphicsData.aGroup[iGroup].aValueNum[iElement] & "]"
+				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
+'println "DEBUG: [dblValue]: [" & dblValue & "]."
 				' always show some color
-				dblValue =  Scene._validateMinBarValue( dblValue, 0.1 )
+				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
+'println "DEBUG: [dblValue]: [" & dblValue & "].."
 
 				' set posY of element
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
+'				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
 
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
+				' set animation keyframe and visibility
+				If dblValue > 0 Then
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = TRUE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
+				ElseIf dblValue < 0 Then         
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = TRUE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
+				Else     
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
+				End If
 
 				' set text value and labels
-				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath).Active = TRUE
-				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath).Active = FALSE
-'
-' look here!!!!
-'
-				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+
+				' set text value and labels
+'				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+
 			ElseIf sGraphicsData.strTypeOfGraphic = "UMVPD" Then
 				' calculate and set animation value
 				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
@@ -487,10 +501,16 @@ Scene.dbgOutput(1, strDebugLocation, "[kDataSubPath & kTextDataSubPath]: ["& kDa
 			End If
 
 			' set element material
-			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
-			tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
-			contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
-			contElement.FindSubContainer("$DATA$obj_geom").FindKeyframeOfObject("k_value").FloatValue = dblValue
+			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath  & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
+			If sGraphicsData.strTypeOfGraphic = "UMVD" Then
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_pos").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom_pos").Material = tmpMaterial
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_neg").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom_neg").Material = tmpMaterial
+			Else
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
+			End If
 			
 			' add animation index to playout control
 			Scene._PlayoutAnimationAdd( contElement, sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] )
