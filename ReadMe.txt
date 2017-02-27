@@ -14,8 +14,21 @@ Noggi Height = 414.2 is 1080 pixel screen size
 ------------------------------------------------------------------------------
 DONE:
 General     : Headline
-Hochrechnung: HRPZ, HRPD, HRPD, HRPG, HRWB 
+Hochrechnung: HRPZ, HRPD, HRPD, HRPG, HRWB, HROW_7x
 Umfrage     : UMVP, UMVD, UMVB_2x
+
+------------------------------------------------------------------------------
+TODO:
+create gHROW_2b, gHROW_3b, gHROW_4b, gHROW_5b, gHROW_6b, gHROW_8b, gHROW_9b analog gHROW_7b
+create gHRPG_6b, gHRPG_7b, gHRPG_8b, gHRPG_9b
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.26:
+scene - Geometry:
+- created gHROW_7b
+
+moPlayoutHROW_v2017
+- adapted playout control for UMVD (container path, visibility, animation keyframe, material)
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.26:

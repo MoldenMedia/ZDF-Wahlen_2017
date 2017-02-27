@@ -41,8 +41,7 @@ Dim sGlobalParameter As Scene.structGlobalParameter
 '-------------------------------------------------------------------------------
 ' contaner definitions
 '-------------------------------------------------------------------------------
-Dim contBarObj1, contBarObj1Mirror As Container
-Dim contBarObj2, contBarObj2Mirror As Container
+Dim contBarObj1, contBarObj2 As Container
 '-------------------------------------------------------------------------------
 Structure structGroupData
 	strLabel       As String
@@ -276,7 +275,6 @@ Dim kTextGroupLabelSubPath   As String = "$GROUP_LABEL$TRANS$txt_info"
 Dim kDataSubPath             As String = "$DATA"
 
 Dim kBarColoredSubPath       As String = "$obj_geom"
-Dim kBarColoredSubPathMirror As String = "$obj_geom_mirror"
 Dim kArrowSubPath            As String = "$TRANS$ELE_ARROW"
 Dim kArrowUpObjSubPath       As String = "$obj_arrow_up"
 Dim kArrowUnchObjSubPath     As String = "$obj_arrow_unch"
@@ -333,7 +331,6 @@ Sub updateScene_assignData()
 				dblValue = CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
 				dblValue = dblValue * fMaxVizValue / fMaxBarValue
 				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPathMirror ).FindKeyframeOfObject("k_value").FloatValue = dblValue
 	
 				' set text value and labels
 				Scene.dbgOutput(1, strDebugLocation, "[kDataSubPath & kTextDataSubPath] [aValueTxt]: [" & kDataSubPath & kTextDataSubPath & "] [" & sGraphicsData.aGroup[iGroup].aValueTxt[iElement] & "] [" & sGraphicsData.aGroup[iGroup].aLabel1[iElement] & "]")
@@ -344,10 +341,6 @@ Sub updateScene_assignData()
 				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
 				contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
 				contElement.FindSubContainer("$DATA$obj_geom").FindKeyframeOfObject("k_value").FloatValue = dblValue
-				
-				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_mirror").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] ) 
-				contElement.FindSubContainer("$DATA$obj_geom_mirror").Material = tmpMaterial
-				contElement.FindSubContainer("$DATA$obj_geom_mirror").FindKeyframeOfObject("k_value").FloatValue = dblValue
 
 			ElseIf iElement = 1 Then
 
