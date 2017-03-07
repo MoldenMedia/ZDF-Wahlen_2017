@@ -1,26 +1,51 @@
 ToDo:
-- create gHRPG graphics
 - adapt moPlayoutHRPX_v2017.vbs script
 
 General:
 - center graphics on screen
-
-- PLAYOUT SCRIPTS!!!
-- ANMATIONS!!!
 
 NOTE:
 Noggi Width  = 736.5 is 1920 pixel screen size
 Noggi Height = 414.2 is 1080 pixel screen size
 ------------------------------------------------------------------------------
 DONE:
-General     : Headline
-Hochrechnung: HRPZ, HRPD, HRPD, HRPG, HRWB, HROW_7x
-Umfrage     : UMVP, UMVD, UMVB_2x
+General     : Headline,Legende (teilweise)
+Hochrechnung: HRPZ, HRPD, HRPD, HRPG, HRWB, HROW_2x/3x/4x/5x/6x/7x
+Umfrage     : UMVP, UMVD, UMVB_2x/3x, UMKV3 (teilweise)
 
 ------------------------------------------------------------------------------
 TODO:
 create gHROW_2b, gHROW_3b, gHROW_4b, gHROW_5b, gHROW_6b, gHROW_8b, gHROW_9b analog gHROW_7b
 create gHRPG_6b, gHRPG_7b, gHRPG_8b, gHRPG_9b
+
+TODO: HRSVS1 Calculate position of labels
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.07:
+scene - Geometry:
+- continued gHRSVS1 adaptation
+
+moPlayoutHRSVS1v2017
+- adapted playout control for Legends (position.X)
+- cleanup script
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.06:
+scene - Geometry:
+- started gHRSVS1 adaptation
+- removed mirror geometries
+- adapt label for Gesamtsitze and Majority
+
+moPlayoutHRSVS1v2017
+- adapted playout control for Legends (container path, material, material)
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.02.27:
+scene - Geometry:
+- started gUMKV3 adaptation
+
+moPlayoutLegends_v2017
+- adapted playout control for Legends (container path, visibility, animation keyframe, material)
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.02.26:
