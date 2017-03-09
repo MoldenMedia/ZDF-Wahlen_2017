@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "22.02.2017"
+Dim theDateModified     As String = "09.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -45,9 +45,6 @@ Dim kElementBaseName         As String = "_E"
 Dim kTransSubPath            As String = "$TRANS"
 Dim kTextGroupLabelSubPath   As String = "$GROUP_LABEL$TRANS$txt_group"
 Dim kDataSubPath             As String = "$DATA"
-
-'Dim kBar1SubPath             As String = "$TRANS$G1_E1$DATA"
-'Dim kBar2SubPath             As String = "$TRANS$G1_E2$DATA"
 
 Dim kBarColoredSubPath       As String = "$obj_geom"
 Dim kArrowsSubPath           As String = "$TENDENZ$ARROWS"
@@ -263,8 +260,8 @@ Sub readGraphicsData()
 		If sGroupData.dblMinValue = 0.0 And sGroupData.dblMaxValue = 0.0 Then
 
 			If sGraphicsData.strTypeOfGraphic = "HRPD" Then
-				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aDiffNum )
-				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aDiffNum )
+				dblTempMinValue = 0.0
+				dblTempMaxValue = Scene._getAbsMaxBaxValue( sGroupData.aDiffNum )
 			Else
 				dblTempMinValue = 0.0
 				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
@@ -302,17 +299,12 @@ Sub readGraphicsData()
 	If sGraphicsData.strTypeOfGraphic = "HRPZ" Then
 		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZ - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	ElseIf sGraphicsData.strTypeOfGraphic = "HRPD" Then
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPD
-'		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	ElseIf sGraphicsData.strTypeOfGraphic = "HRPG" Then
 		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPG - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	ElseIf sGraphicsData.strTypeOfGraphic = "HRPZD" Then
 		fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	End If
-
-' TEMPORARY OVERWRITE 22.02.2017
-' set to max height of noggi!!
-fMaxVizValue = 100.0
 
 	nVisibleLabel = nMaxLabel
 
@@ -385,12 +377,14 @@ Sub updateScene_assignData()
 	fMaxRange = sGraphicsData.aGroup[0].dblMaxValue
 
 	If sGraphicsData.strTypeOfGraphic = "HRPD" Then
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblMaxVizValueHRLabHeight - 2.0*8.0) / ( fMaxRange - fMinRange )
-		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblMaxVizValueHRLabHeight + 8.0 + fMinVizValue
-		' set posY of zero plane
-		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY
+		dblScaleFactor = ( fMaxVizValue - fMinVizValue) / ( fMaxRange - fMinRange )
+'		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblMaxVizValueHRLabHeight - 2.0*8.0) / ( fMaxRange - fMinRange )
+'		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblMaxVizValueHRLabHeight + 8.0 + fMinVizValue
+'		' set posY of zero plane
+'		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY
 	Else
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - sGlobalParameter.dblMaxVizValueHRLabHeight - 8.0) / ( fMaxRange - fMinRange )
+		dblScaleFactor = ( fMaxVizValue - fMinVizValue) / ( fMaxRange - fMinRange )
+'		dblScaleFactor = ( fMaxVizValue - fMinVizValue - sGlobalParameter.dblMaxVizValueHRLabHeight - 8.0) / ( fMaxRange - fMinRange )
 	End If
 
 'println "DEBUG: ------------------------------------------------"
@@ -461,7 +455,6 @@ Sub updateScene_assignData()
 
 				' set text value and labels
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
-
 
 			ElseIf sGraphicsData.strTypeOfGraphic = "HRPG" Then
 				' calculate and set animation value
@@ -534,5 +527,7 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
+
+
 
 

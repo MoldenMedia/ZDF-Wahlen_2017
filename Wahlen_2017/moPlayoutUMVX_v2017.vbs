@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "26.02.2017"
+Dim theDateModified     As String = "09.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -10,10 +10,6 @@ Dim theGraphics         As String = "UMFRAGE: Prozente|Differenzen|Anhaenger - m
 
 '-------------------------------------------------------------------------------
 ' CHANGES
-'	04.10.2010 (ie) Button Spiegelung an/aus zugefügt
-'	04.10.2010 (ie) Button Grouplabel schieben zugefügt
-'	07.02.2017 (tm) Button Spiegelung entfernt
-'                   remove all mirror stuff
 '-------------------------------------------------------------------------------
 '-------------------------------------------------------------------------------
 ' global definitions
@@ -285,10 +281,14 @@ Scene.dbgOutput(1, "readGraphicsData(): ", "..[aEleLabel1[" & iGroup & "]]: [" &
 		If sGroupData.dblMinValue = 0.0 And sGroupData.dblMaxValue = 0.0 Then
 
 			If sGraphicsData.strTypeOfGraphic = "UMVD" Then
-'				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aDiffNum )
-'				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aDiffNum )
-				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aValueNum )
-				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
+				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aDiffNum )
+				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aDiffNum )
+'				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aValueNum )
+'				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
+'				dblTempMinValue = 0.0
+' FIX THIS!!! Temporary overwrite
+				dblTempMinValue = 0.0
+				dblTempMaxValue = Scene._getAbsMaxBaxValue( sGroupData.aDiffNum )
 			Else
 				dblTempMinValue = 0.0
 				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
@@ -323,10 +323,10 @@ Scene.dbgOutput(1, "readGraphicsData(): ", "..[aEleLabel1[" & iGroup & "]]: [" &
 	' get maxVizValue [UMVP|UMVPD]
 	If sGraphicsData.strTypeOfGraphic = "UMVD" Then
 		fMinVizValue = 0.0
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVD
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVD - (nMaxlabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	Else
 		fMinVizValue = 0.0
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVP - (nMaxlabel)*sGlobalParameter.dblMaxVizValueHRLabHeight
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVP - (nMaxlabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	End If
 
 	nVisibleLabel = nMaxLabel
@@ -398,13 +398,15 @@ Sub updateScene_assignData()
 	fMaxRange = sGraphicsData.aGroup[0].dblMaxValue
 
 	If sGraphicsData.strTypeOfGraphic = "UMVD" Then
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblUMLabHeight - 2.0*7.0) / ( fMaxRange - fMinRange )
-		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblUMLabHeight + 7.0 + fMinVizValue
+		dblScaleFactor = ( fMaxVizValue - fMinVizValue) / ( fMaxRange - fMinRange )
+'		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblUMLabHeight - 2.0*7.0) / ( fMaxRange - fMinRange )
+'		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblUMLabHeight + 7.0 + fMinVizValue
 		' set posY of zero plane
 '		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY * 0.9
-		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY
+'		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY
 	Else
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - sGlobalParameter.dblUMLabHeight - 7.0) / ( fMaxRange - fMinRange )
+		dblScaleFactor = ( fMaxVizValue - fMinVizValue) / ( fMaxRange - fMinRange )
+'		dblScaleFactor = ( fMaxVizValue - fMinVizValue - sGlobalParameter.dblUMLabHeight - 7.0) / ( fMaxRange - fMinRange )
 	End If
 
 'println "DEBUG: ------------------------------------------------"
@@ -553,6 +555,7 @@ Sub	setMoveGroupLabel()
 
 End Sub	
 '-------------------------------------------------------------------------------
+
 
 
 

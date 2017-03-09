@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "07.02.2017"
+Dim theDateModified     As String = "09.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -114,24 +114,24 @@ Sub OnInitParameters()
 	RegisterParameterString("theGMaterialPath", "material folder:", "MATERIAL*ZDFWahlen_2017/9_SHARED/material/", 55, 128, "")
 	RegisterParameterDouble("theHRLabHeight", "label height HR", 3.8, 2.0, 100.0)
 	RegisterParameterDouble("theUMLabHeight", "label height UM", 4.6, 2.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueHRWB", "max Viz value HRWB", 37.3, 10.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueHRPZ", "max Viz value HRPZ", 50.1, 10.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 45.5, 10.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueHRPD", "max Viz value HRPD", 54.5, 5.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueHRPG", "max Viz value HRPG", 50.1, 10.0, 100.0)
+	RegisterParameterDouble("theMaxVizValueHRWB", "max Viz value HRWB", 37.3, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueHRPZ", "max Viz value HRPZ", 167.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 167.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueHRPD", "max Viz value HRPD", 81.0, 5.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueHRPG", "max Viz value HRPG", 167.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRSV", "max Viz value HRSV", 180.0, 0.0, 360.0)
-	RegisterParameterDouble("theMaxVizValueHROW", "max Viz value HROW", 100.0, 50.0, 100.0)
+	RegisterParameterDouble("theMaxVizValueHROW", "max Viz value HROW", 100.0, 50.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRSVB", "max Viz value HRSVB", 315.0, 50.0, 350.0)
-	RegisterParameterDouble("theMaxVizValueUMVB", "max Viz value UMVB", 60.0, 10.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueUMVP", "max Viz value UMVP", 50.0, 10.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueUMVD", "max Viz value UMVD", 50.0, 5.0, 100.0)
+	RegisterParameterDouble("theMaxVizValueUMVB", "max Viz value UMVB", 60.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueUMVP", "max Viz value UMVP", 167.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueUMVD", "max Viz value UMVD", 81.0, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMHP", "max Viz value UMHP", 125.0, 50.0, 150.0)
 	RegisterParameterDouble("theMaxVizValueUMHPD", "max Viz value UMHPD", 104.0, 50.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueUMAS", "max Viz value UMAS", 53.5, 5.0, 100.0)
+	RegisterParameterDouble("theMaxVizValueUMAS", "max Viz value UMAS", 53.5, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMKB", "max Viz value UMKB", 47.0, 10.0, 150.0)
 	RegisterParameterDouble("theMaxVizValueUMKV", "max Viz value UMKV", 125.0, 0.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 49.0, 10.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueANVD", "max Viz value ANVD", 50.0, 5.0, 100.0)
+	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 49.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueANVD", "max Viz value ANVD", 50.0, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValuePBPJ", "max Viz value PBPJ", 180.0, 0.0, 360.0)
 	RegisterParameterDouble("theMinVizValuePBRK", "min Viz value PBRK", 0.138, 0.1, 1.0)
 	RegisterParameterDouble("theMaxVizValuePBRK", "max Viz value PBRK", 0.768, 0.1, 1.0)
@@ -147,6 +147,11 @@ Sub OnInit()
 	readGlobalParameter()
 End Sub
 '-------------------------------------------------------------------------------
+'
+Sub OnParameterChanged(parameterName As String)
+	readGlobalParameter()
+End Sub
+'-------------------------------------------------------------------------------
 Sub readGlobalParameter()
 	Dim strDebugLocation As String = strScriptName & "readGlobalParameter():"
 	
@@ -156,7 +161,7 @@ Sub readGlobalParameter()
 	sGlobalParameter.strGlobMaterialPath       = GetParameterString("theGMaterialPath")
 	sGlobalParameter.dblMaxVizValueHRWB        = GetParameterDouble("theMaxVizValueHRWB")
 	sGlobalParameter.dblMaxVizValueHRPZ        = GetParameterDouble("theMaxVizValueHRPZ")
-	sGlobalParameter.dblMaxVizValueHRPZD        = GetParameterDouble("theMaxVizValueHRPZD")
+	sGlobalParameter.dblMaxVizValueHRPZD       = GetParameterDouble("theMaxVizValueHRPZD")
 	sGlobalParameter.dblMaxVizValueHRPD        = GetParameterDouble("theMaxVizValueHRPD")
 	sGlobalParameter.dblMaxVizValueHRPG        = GetParameterDouble("theMaxVizValueHRPG")
 	sGlobalParameter.dblMaxVizValueHRSV        = GetParameterDouble("theMaxVizValueHRSV")
@@ -1120,5 +1125,3 @@ End Sub
 Function GetHRSVK2_Variant() as Integer
 	GetHRSVK2_Variant = iHRSVK2_Variant
 End Function
-
-

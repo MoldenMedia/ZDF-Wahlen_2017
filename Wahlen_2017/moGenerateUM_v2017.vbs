@@ -1,8 +1,8 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "26.02.2017"
-Dim theContactDetails   As String = "t.molden@moldenmedia.de"
+Dim theDateModified     As String = "09.03.2017"
+Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
 Dim theProject          As String = "ElectionSceneStructure (Redesign 2017)"
@@ -217,14 +217,25 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 		sGraphicDetails.fElemGap         = kVBarGap
 
 		' assign width defined by type of bar
-		Select Case sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
-			Case "UMVP_1-5b" 
+'		Select Case sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
+'			Case "UMVP_1-5b" 
+'				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
+'			Case "UMVP_6-7b" 
+'				 sGraphicDetails.fElemWidth = kVBarWidth_6_7
+'			Case "UMVP_8b"   
+'				 sGraphicDetails.fElemWidth = kVBarWidth_8
+'			Case "UMVP_9b"   
+'				 sGraphicDetails.fElemWidth = kVBarWidth_9
+'			Case Else         
+'				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
+		Select Case sGraphicDetails.strTypeOfBar
+			Case "1-5b" 
 				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
-			Case "UMVP_6-7b" 
+			Case "6-7b" 
 				 sGraphicDetails.fElemWidth = kVBarWidth_6_7
-			Case "UMVP_8b"   
+			Case "8b"   
 				 sGraphicDetails.fElemWidth = kVBarWidth_8
-			Case "UMVP_9b"   
+			Case "9b"   
 				 sGraphicDetails.fElemWidth = kVBarWidth_9
 			Case Else         
 				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
@@ -744,4 +755,6 @@ End Sub
 '
 '
 '-------------------------------------------------------------------------------
+
+
 

@@ -15,17 +15,33 @@ Umfrage     : UMVP, UMVD, UMVB_2x/3x, UMKV3 (teilweise)
 
 ------------------------------------------------------------------------------
 TODO:
-create gHROW_2b, gHROW_3b, gHROW_4b, gHROW_5b, gHROW_6b, gHROW_8b, gHROW_9b analog gHROW_7b
-create gHRPG_6b, gHRPG_7b, gHRPG_8b, gHRPG_9b
+--> maxSize for UMVD
 
-TODO: HRSVS1 Calculate position of labels
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.09:
+SceneScript_v2017
+- set max Viz value HRPZ  = 167.0
+- set max Viz value HRPD  =  81.0
+- set max Viz value HRPZD = 167.0
+- set max Viz value HRPG  = 167.0
+- set max Viz value UMVP  = 167.0
+- set max Viz value UMVD  =  81.0
+- add OnParameterChanged function
+
+moPlayoutHRPX_v2017
+- fix maxSize calculation for 1x line labels HRPZ, HRPG, HRPZD, HRPD
+
+moPlayoutUMVX_v2017
+- fix maxSize calculation for 1x line labels UMVP, UMVD
+--> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.07:
 scene - Geometry:
 - continued gHRSVS1 adaptation
 
-moPlayoutHRSVS1v2017
+moPlayoutHRSVS1_v2017
 - adapted playout control for Legends (position.X)
 - cleanup script
 
@@ -36,7 +52,7 @@ scene - Geometry:
 - removed mirror geometries
 - adapt label for Gesamtsitze and Majority
 
-moPlayoutHRSVS1v2017
+moPlayoutHRSVS1_v2017
 - adapted playout control for Legends (container path, material, material)
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
