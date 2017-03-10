@@ -16,7 +16,27 @@ Umfrage     : UMVP, UMVD, UMVB_2x/3x, UMKV3 (teilweise)
 ------------------------------------------------------------------------------
 TODO:
 --> maxSize for UMVD
+--> maxSize for UMVD needs to be fixed
 
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.10:
+scene - Geometry:
+- fixed gHRWB geometry
+- fixed gHROW banner width animation in geometry gHWOW_7x
+
+SceneScript_v2017
+- set max Viz value HRWB  = 167.0
+- set max Viz value HROW  = 195.0
+- set max Viz value UMVB  =  65.0
+
+moPlayoutHRWB_v2017
+- fix maxSize calculation for 1x line labels HRWB
+
+moPlayoutHROW_v2017
+- fix maxSize calculation
+
+moPlayoutUMVB_v2017
+- fix maxSize calculation for 1x line labels UMVB
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.09:
@@ -34,7 +54,6 @@ moPlayoutHRPX_v2017
 
 moPlayoutUMVX_v2017
 - fix maxSize calculation for 1x line labels UMVP, UMVD
---> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.07:

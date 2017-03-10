@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
-Dim theAuthor           As String = "Thomas Molden"
+Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "26.02.2017"
+Dim theDateModified     As String = "10.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -303,7 +303,7 @@ Sub readGraphicsData()
 
 	' get maxVizValue 
 	fMinVizValue = 0.0
-	fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVB - (nMaxlabel)*sGlobalParameter.dblMaxVizValueHRLabHeight
+	fMaxVizValue = sGlobalParameter.dblMaxVizValueUMVB - (nMaxlabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 
 	nVisibleLabel = nMaxLabel
 
@@ -373,7 +373,7 @@ Sub updateScene_assignData()
 	fMinRange = sGraphicsData.aGroup[0].dblMinValue
 	fMaxRange = sGraphicsData.aGroup[0].dblMaxValue
 
-	dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblUMLabHeight - 2.0*7.0) / ( fMaxRange - fMinRange )
+	dblScaleFactor = ( fMaxVizValue - fMinVizValue ) / ( fMaxRange - fMinRange )
 
 'println "DEBUG: ------------------------------------------------"
 'println "DEBUG: [sGlobalParameter.dblUMLabHeight]: ["	& sGlobalParameter.dblUMLabHeight & "]" 

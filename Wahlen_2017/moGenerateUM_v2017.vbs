@@ -1,5 +1,5 @@
 '-------------------------------------------------------------------------------
-Dim theAuthor           As String = "Thomas Molden"
+Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "25.09.2007"
 Dim theDateModified     As String = "09.03.2017"
 Dim theContactDetails   As String = "thomas@molden.de"

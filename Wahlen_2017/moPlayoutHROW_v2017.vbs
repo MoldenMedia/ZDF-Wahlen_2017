@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
-Dim theAuthor           As String = "Thomas Molden, Stefan Glatzl"
+Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "27.02.2017"
+Dim theDateModified     As String = "10.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -451,6 +451,7 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
+
 
 
 
