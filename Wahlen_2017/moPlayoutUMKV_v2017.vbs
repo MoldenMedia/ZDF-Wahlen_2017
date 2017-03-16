@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "01.03.2017"
+Dim theDateModified     As String = "15.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -187,14 +187,12 @@ Sub readGraphicsData()
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strGroupSeparator, aGroupEleList )
 	strTemp = GetParameterString("theGroupLabel")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aGroupLabList )
 	strTemp = GetParameterString("theMaterial")
 	strTemp.Split( strGroupSeparator, aEleMaterial )
 	strTemp = GetParameterString("theValueNum")
 	strTemp.Split( strGroupSeparator, aEleValueNum )
 	strTemp = GetParameterString("theValueTxt")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aEleValueTxt )
 	strTemp = GetParameterString("theAnimOrderFlag")
 	strTemp.Split( strGroupSeparator, aEleAnimOrder )

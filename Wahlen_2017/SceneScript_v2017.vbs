@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
-Dim theAuthor           As String = "tm"
+Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "09.03.2017"
+Dim theDateModified     As String = "15.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -44,6 +44,7 @@ Structure structGlobalParameter
 	dblMaxVizValueHRLabHeight As Double
 	dblHRLabHeight            As Double
 	dblUMLabHeight            As Double
+	dblANLabHeight            As Double
 	dblMaxVizValuePBPJ        As Double
 	dblMinVizValuePBRK        As Double
 	dblMaxVizValuePBRK        As Double
@@ -114,6 +115,7 @@ Sub OnInitParameters()
 	RegisterParameterString("theGMaterialPath", "material folder:", "MATERIAL*ZDFWahlen_2017/9_SHARED/material/", 55, 128, "")
 	RegisterParameterDouble("theHRLabHeight", "label height HR", 3.8, 2.0, 100.0)
 	RegisterParameterDouble("theUMLabHeight", "label height UM", 4.6, 2.0, 100.0)
+	RegisterParameterDouble("theANLabHeight", "label height AN", 3.8, 2.0, 100.0)
 	RegisterParameterDouble("theMaxVizValueHRWB", "max Viz value HRWB", 37.3, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRPZ", "max Viz value HRPZ", 167.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 167.0, 10.0, 200.0)
@@ -130,7 +132,7 @@ Sub OnInitParameters()
 	RegisterParameterDouble("theMaxVizValueUMAS", "max Viz value UMAS", 53.5, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMKB", "max Viz value UMKB", 47.0, 10.0, 150.0)
 	RegisterParameterDouble("theMaxVizValueUMKV", "max Viz value UMKV", 125.0, 0.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 49.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 167.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueANVD", "max Viz value ANVD", 50.0, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValuePBPJ", "max Viz value PBPJ", 180.0, 0.0, 360.0)
 	RegisterParameterDouble("theMinVizValuePBRK", "min Viz value PBRK", 0.138, 0.1, 1.0)
@@ -180,6 +182,7 @@ Sub readGlobalParameter()
 	sGlobalParameter.dblMaxVizValueHRLabHeight = GetParameterDouble("theHRLabHeight")
 	sGlobalParameter.dblHRLabHeight            = GetParameterDouble("theHRLabHeight")
 	sGlobalParameter.dblUMLabHeight            = GetParameterDouble("theUMLabHeight")
+	sGlobalParameter.dblANLabHeight            = GetParameterDouble("theANLabHeight")
 	sGlobalParameter.dblMaxVizValuePBPJ        = GetParameterDouble("theMaxVizValuePBPJ")
 	sGlobalParameter.dblMinVizValuePBRK        = GetParameterDouble("theMinVizValuePBRK")
 	sGlobalParameter.dblMaxVizValuePBRK        = GetParameterDouble("theMaxVizValuePBRK")
@@ -1125,3 +1128,4 @@ End Sub
 Function GetHRSVK2_Variant() as Integer
 	GetHRSVK2_Variant = iHRSVK2_Variant
 End Function
+

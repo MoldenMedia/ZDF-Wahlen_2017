@@ -19,8 +19,34 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-2017.03.15:
+2017.03.15/16:
+scene - Geometry:
+- adapted gANSVZP_2x geometry
+- adapted gANSVZPD_2x geometry
 
+SceneScript_v2017:
+- set max Viz value ANVP = 167.0
+- define and set theANLabHeight to 3.8
+
+moPlayout-Scripts:
+- comment out ANSItoUTF8
+   . moPlayoutHROW_v2017
+   . moPlayoutHRPX_v2017
+   . moPlayoutHRSVS1_v2017
+   . moPlayoutHRWB_v2017
+   . moPlayoutLegends_v2017
+   . moPlayoutUMKV_v2017
+   . moPlayoutUMVB_v2017
+   . moPlayoutUMVX_v2017
+   . moPlayoutHeadline_v2017
+   . moPlayoutUMKV3_v2017
+   . moPlayoutANSVZX_v2017
+
+moPlayoutANSVZX_v2017:
+- started adaptation
+
+moPlayoutANNQRX_v2017:
+- started adaptation
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.10:

@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "07.03.2017"
+Dim theDateModified     As String = "15.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -229,19 +229,14 @@ Sub readGraphicsData()
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strPieSeparator, aPGroupEleList )
 	strTemp = GetParameterString("theGroupLabel")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPGroupLabList )
 	strTemp = GetParameterString("theLabel1")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPEleLabel1 )
 	strTemp = GetParameterString("theLabel2")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPEleLabel2 )
 	strTemp = GetParameterString("theLabel3")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPEleLabel3 )
 	strTemp = GetParameterString("theLabel4")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPEleLabel4 )
 	strTemp = GetParameterString("theMaterial")
 	strTemp.Split( strPieSeparator, aPEleMaterial )
@@ -251,7 +246,6 @@ Sub readGraphicsData()
 	
 	' check for labels
 	strTemp = GetParameterString("theValueTxt")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPEleValueTxt )
 	strValueTxt = strTemp
 'println "DEBUG: vorher [strValueTxt]: [" & strValueTxt & "]"	
@@ -266,7 +260,6 @@ Sub readGraphicsData()
 	strTemp = GetParameterString("theDiffNum")
 	strTemp.Split( strPieSeparator, aPEleDiffNum )
 	strTemp = GetParameterString("theDiffTxt")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strPieSeparator, aPEleDiffTxt )
 	strTemp = GetParameterString("theAnimOrderFlag")
 	strTemp.Split( strPieSeparator, aPEleAnimOrder )

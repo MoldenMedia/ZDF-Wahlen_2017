@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "25.10.2007"
-Dim theDateModified     As String = "27.02.2017"
+Dim theDateModified     As String = "15.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -110,7 +110,6 @@ Sub readLegendenData()
 		sLegende.strText     = aStrTemp[0]
 		sLegende.strMaterial = aStrTemp[1]
 		sLegende.strText.Trim()
-		sLegende.strText.AnsiToUTF8()
 		sLegende.strMaterial.Trim()
 		aLegendenData.Push( sLegende )
 		Scene.dbgOutput(1, strDebugLocation, "sLegende[i].[strText] [Material]: [" & cntLeg & "] [" & sLegende.strText & "] [" & sLegende.strMaterial & "]")
