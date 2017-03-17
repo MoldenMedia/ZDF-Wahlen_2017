@@ -19,6 +19,17 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.17:
+scene - Geometry:
+- prepare HRPZ for multi-line-label support
+
+moPlayoutHRPX_v2017:
+- multi-line-label support for HRPZ, HRPZD
+
+SceneScript_v2017:
+- add sub _updateScene_assignLabel_3_2017 for mulit-line-label support 
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.15/16:
 scene - Geometry:
 - adapted gANSVZP_2x geometry

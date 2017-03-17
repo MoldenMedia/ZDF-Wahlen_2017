@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "17.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -207,6 +207,71 @@ Dim kValueSubPath            As String = "$txt_value"
 Dim kValueDiffSubPath        As String = "$txt_diff"
 Dim kTextSubPath             As String = "$txt_label"
 Dim kUnitSubPath             As String = "$txt_unit"
+'-------------------------------------------------------------------------------
+' update labels according to redesign 2017
+Sub _updateScene_assignLabel_3_2017(contLabelBase As Container, strTypeOfGraphics As String, strValue As String, strLabel1 As String, strLabel2 As String, strLabel3 As String, dblValue As Double, nVisibleLabel As Integer)
+	Dim strDebugLocation As String = strScriptName & "_updateScene_assignLabel_3_2017():"
+	Dim contWork1, contWork2, contWork3 As Container
+	Dim strTemp As String
+	
+	' trim strings
+	strValue.Trim()
+	strLabel1.Trim()
+	strLabel2.Trim()
+	strLabel3.Trim()
+	
+	' set value text
+	contWork1 = contLabelBase.FindSubContainer( kTextValueSubPath )
+'	If strValue = "" And ( strTypeOfGraphics = "HRPZ" Or strTypeOfGraphics = "HRPG" Or strTypeOfGraphics = "HRWB" Or strTypeOfGraphics = "UMVP" ) Then
+	If strValue = "" And strTypeOfGraphics.Match( "[HRPZ|HRPG|HRPZD|HRWB|UMVP|HROWVP|ANNQRP|ANSVZP|PBPJ|UMWW]" ) Then
+		contWork1.FindSubContainer( kUnitSubPath ).Active = FALSE
+	ElseIf strTypeOfGraphics.Match( "HRPD|UMVD|HROWVD|ANNQRD|ANSVZD|PBPJPD" ) Then
+		contWork1.FindSubContainer( kUnitSubPath ).Active = FALSE
+	Else
+		contWork1.FindSubContainer( kUnitSubPath ).Active = TRUE
+	End If
+	' show empty labels
+	contWork1.Active = TRUE
+	contWork1.FindSubContainer( kValueSubPath ).Geometry.Text = strValue
+	
+	' set label text
+	contWork1 = contLabelBase.FindSubContainer( kTextLabel1SubPath )
+	contWork2 = contLabelBase.FindSubContainer( kTextLabel2SubPath )
+	contWork3 = contLabelBase.FindSubContainer( kTextLabel3SubPath )
+
+dbgOutput(1, strDebugLocation, "[strLabel1]: [" & strLabel1 & "][strLabel2]: [" & strLabel2 & "] [strLabel3]: [" & strLabel3 & "].")
+dbgOutput(1, strDebugLocation, "[contLabelBase.name]: [" & contLabelBase.name & "].")
+dbgOutput(1, strDebugLocation, "[contWork1.name]: [" & contWork1.name & "].")
+dbgOutput(1, strDebugLocation, "[contWork2.name]: [" & contWork2.name & "].")
+dbgOutput(1, strDebugLocation, "[contWork3.name]: [" & contWork3.name & "].")
+
+
+	If nVisibleLabel = 1 Then
+		contWork1.Active = TRUE
+		contWork2.Active = FALSE
+		contWork3.Active = FALSE
+		strTemp = strLabel1
+		contWork1.FindSubContainer( kTextSubPath ).Geometry.Text = strTemp
+	ElseIf nVisibleLabel = 2 Then
+		contWork1.Active = FALSE
+		contWork2.Active = TRUE
+		contWork3.Active = FALSE
+		strTemp = strLabel1 & CHR(13) & CHR(10) & strLabel2
+		contWork2.FindSubContainer( kTextSubPath ).Geometry.Text = strTemp
+	ElseIf nVisibleLabel = 3 Then
+		contWork1.Active = FALSE
+		contWork2.Active = FALSE
+		contWork3.Active = TRUE
+		strTemp = strLabel1 & CHR(13) & CHR(10) & strLabel2 & CHR(13) & CHR(10) & strLabel3
+		contWork3.FindSubContainer( kTextSubPath ).Geometry.Text = strTemp
+	Else
+		contWork1.Active = FALSE
+		contWork2.Active = FALSE
+		contWork3.Active = FALSE
+	End If
+	
+End Sub
+
 '-------------------------------------------------------------------------------
 '
 Sub _updateScene_assignLabel_3(contLabelBase As Container, strTypeOfGraphics As String, strValue As String, strLabel1 As String, strLabel2 As String, strLabel3 As String, dblValue As Double)
