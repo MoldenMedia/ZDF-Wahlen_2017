@@ -19,12 +19,29 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-2017.03.17:
+2017.03.18:
 scene - Geometry:
-- prepare HRPZ for multi-line-label support
+- prepare element HRPG_1-5b for multi-line-label support
+- prepare graphic gHRPG_2x for multi-line-label support
+- prepare element HRPZD_1-5b for multi-line-label support
+- prepare graphic gHRPZD_2x for multi-line-label support
+
+SceneScript_v2017
+- set max Viz value HRPG  = 138.0
+- add strTemp.Trim() to _updateScene_assignLabel_3_2017()
 
 moPlayoutHRPX_v2017:
-- multi-line-label support for HRPZ, HRPZD
+- multi-line-label support for HRPG
+- multi-line-label support for HRPZD
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.17:
+scene - Geometry:
+- prepare element HRPZ_1-5b for multi-line-label support
+- prepare graphic gHRPZ_2x for multi-line-label support
+
+moPlayoutHRPX_v2017:
+- multi-line-label support for HRPZ
 
 SceneScript_v2017:
 - add sub _updateScene_assignLabel_3_2017 for mulit-line-label support 

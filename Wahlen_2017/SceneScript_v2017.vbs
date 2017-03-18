@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "17.03.2017"
+Dim theDateModified     As String = "18.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -118,9 +118,9 @@ Sub OnInitParameters()
 	RegisterParameterDouble("theANLabHeight", "label height AN", 3.8, 2.0, 100.0)
 	RegisterParameterDouble("theMaxVizValueHRWB", "max Viz value HRWB", 37.3, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRPZ", "max Viz value HRPZ", 167.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 167.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 138.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRPD", "max Viz value HRPD", 81.0, 5.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRPG", "max Viz value HRPG", 167.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueHRPG", "max Viz value HRPG", 138.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRSV", "max Viz value HRSV", 180.0, 0.0, 360.0)
 	RegisterParameterDouble("theMaxVizValueHROW", "max Viz value HROW", 100.0, 50.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueHRSVB", "max Viz value HRSVB", 315.0, 50.0, 350.0)
@@ -256,13 +256,15 @@ dbgOutput(1, strDebugLocation, "[contWork3.name]: [" & contWork3.name & "].")
 		contWork1.Active = FALSE
 		contWork2.Active = TRUE
 		contWork3.Active = FALSE
-		strTemp = strLabel1 & CHR(13) & CHR(10) & strLabel2
+		strTemp = strLabel1 & CHR(10) & strLabel2
+		strTemp.Trim()
 		contWork2.FindSubContainer( kTextSubPath ).Geometry.Text = strTemp
 	ElseIf nVisibleLabel = 3 Then
 		contWork1.Active = FALSE
 		contWork2.Active = FALSE
 		contWork3.Active = TRUE
-		strTemp = strLabel1 & CHR(13) & CHR(10) & strLabel2 & CHR(13) & CHR(10) & strLabel3
+		strTemp = strLabel1 & CHR(10) & strLabel2 & CHR(10) & strLabel3
+		strTemp.Trim()
 		contWork3.FindSubContainer( kTextSubPath ).Geometry.Text = strTemp
 	Else
 		contWork1.Active = FALSE
