@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "22.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -39,9 +39,6 @@ Dim kTransSubPath            As String = "$TRANS"
 Dim kTextGroupLabelSubPath   As String = "$GROUP_LABEL$TRANS$txt_group"
 Dim kDataSubPath             As String = "$DATA"
 
-'Dim kBar1SubPath             As String = "$TRANS$G1_E1$DATA"
-'Dim kBar2SubPath             As String = "$TRANS$G1_E2$DATA"
-
 Dim kBarColoredSubPath       As String = "$obj_geom"
 Dim kArrowSubPath            As String = "$TRANS$ELE_ARROW"
 
@@ -53,6 +50,14 @@ Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
 
 Dim kServerMaterialPath      As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/material/"
+
+'-------------------------------------------------------------------------------
+' definitions for multi-line labels
+' height of banner 1x line
+Dim kBannerHeight  As Double = 24
+Dim kBannerStep    As Double = 12
+Dim kBGMaxHeightPZ As Double = 214.5
+Dim kBGMaxHeightPD As Double = 186.0
 
 '-------------------------------------------------------------------------------
 ' contaner definitions
@@ -359,13 +364,15 @@ Sub updateScene_assignData()
 	fMaxRange = sGraphicsData.aGroup[0].dblMaxValue
 
 	If sGraphicsData.strTypeOfGraphic = "ANNQRD" Then
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblUMLabHeight - 2.0*7.0) / ( fMaxRange - fMinRange )
-		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblUMLabHeight + 7.0 + fMinVizValue
+		dblScaleFactor = ( fMaxVizValue - fMinVizValue) / ( fMaxRange - fMinRange )
+'		dblScaleFactor = ( fMaxVizValue - fMinVizValue - 2*(nVisibleLabel)*sGlobalParameter.dblUMLabHeight - 2.0*7.0) / ( fMaxRange - fMinRange )
+'		dblZeroPosY = (-1)*( dblScaleFactor * fMinRange ) + (nVisibleLabel)*sGlobalParameter.dblUMLabHeight + 7.0 + fMinVizValue
 
-		' set posY of zero plane
-		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY 
+'		' set posY of zero plane required to adapt scaling range
+'		contBlenderElementIN.FindSubcontainer( "$ELE_ZERO_PLANE" ).Position.Y = dblZeroPosY 
 	Else
-		dblScaleFactor = ( fMaxVizValue - fMinVizValue ) / ( fMaxRange - fMinRange )
+		dblScaleFactor = ( fMaxVizValue - fMinVizValue - (nVisibleLabel-1)*kBannerStep) / ( fMaxRange - fMinRange )
+'		dblScaleFactor = ( fMaxVizValue - fMinVizValue ) / ( fMaxRange - fMinRange )
 	End If
 
 'println "DEBUG: ------------------------------------------------"
@@ -384,9 +391,15 @@ Sub updateScene_assignData()
 		tmpGroupName = kGroupBaseName & iGroup+1
 		contGroup = contBlenderElementIN.FindSubcontainer( kTransSubPath & tmpGroupName )
 		Scene.dbgOutput(1, strDebugLocation, "[tmpGroupName]: [" & tmpGroupName & "]")
-		' update group label
-		contGroup.FindSubcontainer( kTextGroupLabelSubPath ).Geometry.Text = sGraphicsData.aGroup[iGroup].strLabel
 		
+' remove if not required
+' double check scene !!
+'		' update group label
+'		contGroup.FindSubcontainer( kTextGroupLabelSubPath ).Geometry.Text = sGraphicsData.aGroup[iGroup].strLabel
+
+		' set offsets for multi-line banner
+		updateScene_LabelOffsetGroup(sGraphicsData.strTypeOfGraphic, contGroup, nVisibleLabel)
+
 		For iElement = 0 To sGraphicsData.aGroup[iGroup].nElements - 1
 			Scene.dbgOutput(1, strDebugLocation, "updating [iElement]: [" & iElement & "] ..................................................")
 			
@@ -402,9 +415,14 @@ Sub updateScene_assignData()
 				' always show some color
 				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
 				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-	
+				' set offsets for multi-line banner
+				updateScene_LabelOffsetElement(sGraphicsData.strTypeOfGraphic, contElement, nVisibleLabel)
 				' set text value and labels
-				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+				Scene._updateScene_assignLabel_3_2017( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue, nVisibleLabel )
+	
+'				' set text value and labels
+'				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+
 			ElseIf sGraphicsData.strTypeOfGraphic = "ANNQRD" Then
 				' calculate and set animation value
 				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
@@ -419,16 +437,22 @@ Sub updateScene_assignData()
 
 				' set text value and labels
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+
 			ElseIf sGraphicsData.strTypeOfGraphic = "ANNQRPD" Then
+
 				' calculate and set animation value
 				dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
 				' always show some color
 				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
-				
 				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
 	
 				' set text value and labels
-				Scene._updateScene_assignDiffLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement] )
+				Scene._updateScene_assignLabel_3_2017( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue, nVisibleLabel )
+				contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath & kDiffSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aDiffTxt[iElement]
+
+'				' set text value and labels
+'				Scene._updateScene_assignDiffLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement] )
+
 		End If
 
 
@@ -446,6 +470,45 @@ Sub updateScene_assignData()
 		
 	Next	
 	
+End Sub
+'-------------------------------------------------------------------------------
+'
+Sub updateScene_LabelOffsetGroup(typeOfGraphic As String, contGroup As Container, nLabels As Double)
+	Dim bgMaxHeight As Double
+
+	If typeOfGraphic = "ANNQRP" Then
+		bgMaxHeight = kBGMaxHeightPZ
+	ElseIf typeOfGraphic = "ANNQRPD" Then
+		bgMaxHeight = kBGMaxHeightPD
+	Else
+		bgMaxHeight = kBGMaxHeightPZ
+	End If
+	
+	' set height of banner animation end keyframe
+	contGroup.FindSubContainer( kBannerSubPath ).FindKeyframeOfObject("k_value").FloatValue = kBannerHeight + (nLabels-1)*kBannerStep
+	' set Y position for center of banner
+	contGroup.FindSubContainer( kBannerSubPath ).Position.Y = (nLabels-1)*kBannerStep/2.0
+	' set height of group background
+	contGroup.FindSubContainer( kGroupBGSubPath ).Geometry.PluginInstance.SetParameterDouble("height", bgMaxHeight - (nLabels-1)*kBannerStep)
+End Sub
+'-------------------------------------------------------------------------------
+'
+Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Container, nLabels As Double)
+	Dim bgMaxHeight As Double
+
+	If typeOfGraphic = "ANNQRP" Then
+		bgMaxHeight = sGlobalParameter.dblMaxVizValueANVP
+	ElseIf typeOfGraphic = "ANNQRPD" Then
+		bgMaxHeight = sGlobalParameter.dblMaxVizValueANVPD
+		contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath & kTransSubPath).Position.Y = (-1)*(nLabels-1)*kBannerStep
+	Else
+		bgMaxHeight = sGlobalParameter.dblMaxVizValueANVP
+	End If
+
+	' set Y position of bar element
+	contElement.Position.Y = (nLabels-1)*kBannerStep
+	' set height of animation end keyframe
+	contElement.FindSubContainer( kBarBGSubPath ).FindKeyframeOfObject("k_value").FloatValue = bgMaxHeight - (nLabels-1)*kBannerStep
 End Sub
 '-------------------------------------------------------------------------------
 

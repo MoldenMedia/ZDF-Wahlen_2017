@@ -19,6 +19,18 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.22:
+SceneScript_v2017
+- set max Viz value ANVPD  = 138.0
+
+moPlayoutHRPX_v2017:
+- cleanup
+
+moPlayoutANNQRX_v2017:
+- multi-line-label support for ANNQRP
+- multi-line-label support for ANNQRPD
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.18:
 scene - Geometry:
 - prepare element HRPG_1-5b for multi-line-label support

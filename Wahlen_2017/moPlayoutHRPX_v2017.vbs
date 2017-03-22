@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "18.03.2017"
+Dim theDateModified     As String = "22.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -30,8 +30,6 @@ Dim fLabelHeight As Double
 Dim contElementPool As Container
 Dim contBlenderElementIN  As Container
 Dim contBlenderElementOUT As Container
-
-'Dim cont
 
 Dim sGlobalParameter As Scene.structGlobalParameter
 
@@ -65,12 +63,11 @@ Dim kServerMaterialPath      As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/mater
 
 '-------------------------------------------------------------------------------
 ' definitions for multi-line labels
-
 ' height of banner 1x line
 Dim kBannerHeight  As Double = 24
 Dim kBannerStep    As Double = 12
 Dim kBGMaxHeightPZ As Double = 214.5
-Dim kBGMaxHeightPG As Double = 186.0
+Dim kBGMaxHeightPD As Double = 186.0
 
 '-------------------------------------------------------------------------------
 ' contaner definitions
@@ -370,7 +367,7 @@ Sub updateScene_assignData()
 	Dim tmpGroupName, tmpElementName As String
 	Dim tmpMaterial As Material
 	Dim cntIdx As Integer
-	Dim dblValue, dblScaleFactor, dblZeroPosY As Double
+	Dim dblValue, dblScaleFactor As Double
 	Dim iGroup, iElement As Integer
 	Dim fMinRange, fMaxRange As Double
 
@@ -557,7 +554,6 @@ Sub updateScene_LabelOffsetGroup(typeOfGraphic As String, contGroup As Container
 	' set height of group background
 	contGroup.FindSubContainer( kGroupBGSubPath ).Geometry.PluginInstance.SetParameterDouble("height", bgMaxHeight - (nLabels-1)*kBannerStep)
 End Sub
-
 '-------------------------------------------------------------------------------
 '
 Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Container, nLabels As Double)
@@ -566,7 +562,7 @@ Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Conta
 	If typeOfGraphic = "HRPZ" Then
 		bgMaxHeight = sGlobalParameter.dblMaxVizValueHRPZ
 	ElseIf typeOfGraphic = "HRPG" Then
-		bgMaxHeight = sGlobalParameter.dblMaxVizValueHRPG
+		bgMaxHeight = sGlobalParameter.dblMaxVizValueHRPD
 		contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTendenzSubPath & kTransSubPath).Position.Y = (-1)*(nLabels-1)*kBannerStep
 	ElseIf typeOfGraphic = "HRPZD" Then
 		bgMaxHeight = sGlobalParameter.dblMaxVizValueHRPZD
@@ -580,7 +576,6 @@ Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Conta
 	' set height of animation end keyframe
 	contElement.FindSubContainer( kBarBGSubPath ).FindKeyframeOfObject("k_value").FloatValue = bgMaxHeight - (nLabels-1)*kBannerStep
 End Sub
-
 '-------------------------------------------------------------------------------
 
 

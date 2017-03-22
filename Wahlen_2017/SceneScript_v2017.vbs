@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "18.03.2017"
+Dim theDateModified     As String = "22.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -40,6 +40,7 @@ Structure structGlobalParameter
 	dblMaxVizValueUMKB        As Double
 	dblMaxVizValueUMKV        As Double
 	dblMaxVizValueANVP        As Double
+	dblMaxVizValueANVPD       As Double
 	dblMaxVizValueANVD        As Double
 	dblMaxVizValueHRLabHeight As Double
 	dblHRLabHeight            As Double
@@ -133,6 +134,7 @@ Sub OnInitParameters()
 	RegisterParameterDouble("theMaxVizValueUMKB", "max Viz value UMKB", 47.0, 10.0, 150.0)
 	RegisterParameterDouble("theMaxVizValueUMKV", "max Viz value UMKV", 125.0, 0.0, 150.0)
 	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 167.0, 10.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueANVPD", "max Viz value ANVPD", 138.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueANVD", "max Viz value ANVD", 50.0, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValuePBPJ", "max Viz value PBPJ", 180.0, 0.0, 360.0)
 	RegisterParameterDouble("theMinVizValuePBRK", "min Viz value PBRK", 0.138, 0.1, 1.0)
@@ -178,6 +180,7 @@ Sub readGlobalParameter()
 	sGlobalParameter.dblMaxVizValueUMKB        = GetParameterDouble("theMaxVizValueUMKB")
 	sGlobalParameter.dblMaxVizValueUMKV        = GetParameterDouble("theMaxVizValueUMKV")
 	sGlobalParameter.dblMaxVizValueANVP        = GetParameterDouble("theMaxVizValueANVP")
+	sGlobalParameter.dblMaxVizValueANVPD       = GetParameterDouble("theMaxVizValueANVPD")
 	sGlobalParameter.dblMaxVizValueANVD        = GetParameterDouble("theMaxVizValueANVD")
 	sGlobalParameter.dblMaxVizValueHRLabHeight = GetParameterDouble("theHRLabHeight")
 	sGlobalParameter.dblHRLabHeight            = GetParameterDouble("theHRLabHeight")
