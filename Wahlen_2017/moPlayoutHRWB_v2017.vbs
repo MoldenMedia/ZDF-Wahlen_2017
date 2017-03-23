@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "05.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "23.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -15,8 +15,6 @@ Dim strScriptName    As String = "[" & this.name & "]::"
 Dim strGroupSeparator   As String = "#"
 Dim strElementSeparator As String = "|"
 
-'Dim fMaxVizValue As Double = 67.0
-'Dim fMaxBarValue As Double = 100.0
 Dim fMaxVizValue As Double
 Dim fMaxBarValue As Double
 Dim fLabelHeight As Double = 3.5
@@ -26,6 +24,7 @@ Dim fLabelHeight As Double = 3.5
 ' Noggi Height = 414.2 is 1080 pixel screen size -> factor 2.6074
 Dim kHRWBWidth As Double = 265.0    ' 101.65 pixel
 
+Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 Dim kServerMaterialPath As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/material/"
 
 ' container definitions
@@ -58,11 +57,12 @@ Structure structGroupData
 End Structure
 '-------------------------------------------------------------------------------
 Structure structGraphicsData
-	strElemName      As String
-	strTypeOfGraphic As String
-	nGroups          As Integer
-	aGroup           As Array[structGroupData]
-	strDifference    As String
+	strElemName        As String
+	strTypeOfGraphic   As String
+	blnInfoPercentFlag As Boolean
+	nGroups            As Integer
+	aGroup             As Array[structGroupData]
+	strDifference      As String
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGroupData    As structGroupData
@@ -103,6 +103,7 @@ Sub OnInitParameters()
 
 	RegisterParameterString("theAnimOrderFlag", "animation order flags [1|2#...]:", "1|2|2", 55, 55, "")
 	RegisterParameterString("theMaterial", "material [material1|material2]:", "neutral_1||neutral_1", 55, 256, "")
+	RegisterParameterBool("thePercentInfoFlag", "Show Info Percent", TRUE)
 	
 	RegisterPushButton("btAssignValues", "assign values", 11)
 	RegisterInfoText(strInfoText)
@@ -148,6 +149,8 @@ Sub readGraphicsData()
 	
 	' set type of graphics
 	sGraphicsData.strTypeOfGraphic = "HRWB"
+	' get info percent label flag
+	sGraphicsData.blnInfoPercentFlag = GetParameterBool("thePercentInfoFlag")
 	' get group data
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strGroupSeparator, aGroupEleList )
@@ -260,7 +263,6 @@ Sub dumpData()
 End Sub
 '-------------------------------------------------------------------------------
 '
-
 Dim kGroupBaseName           As String = "$G"
 Dim kElementBaseName         As String = "_E"
 
@@ -280,8 +282,6 @@ Dim kTextLabel1SubPath       As String = "$TXT_LABEL_1"
 Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
-
-
 '-------------------------------------------------------------------------------
 '
 Sub updateScene_assignData()
@@ -293,11 +293,13 @@ Sub updateScene_assignData()
 	Dim dblValue As Double
 	Dim iGroup, iElement As Integer
 
-	
 	' remember previous animation details
 	Scene._PlayoutAnimationSwap()
 	' clear animation
 	Scene._PlayoutAnimationClear( "IN" )
+
+	' set visibility of info percent label
+	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
 
 	For iGroup = 0 To sGraphicsData.nGroups
 		Scene.dbgOutput(1, strDebugLocation, "updating [iGroup]: [" & iGroup & "] ----------------------------------------------------")

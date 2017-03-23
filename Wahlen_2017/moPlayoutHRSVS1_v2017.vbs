@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "23.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -43,6 +43,7 @@ Dim kElementBaseName         As String = "_E"
 
 Dim kTransSubPath            As String = "$TRANS"
 Dim kDataSubPath             As String = "$DATA"
+Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 
 Dim kBarColoredGeomSubPath   As String = "$TRANS$obj_geom"
 Dim kBarColoredSubPath       As String = "$TRANS$obj_geom"
@@ -89,16 +90,17 @@ Structure structGroupData
 End Structure
 '-------------------------------------------------------------------------------
 Structure structGraphicsData
-	strElemName      As String
-	strTypeOfGraphic As String
-	nGroups          As Integer
-	fTotalPieValue   As Double
-	aGroup           As Array[structGroupData]
-	nBigLabel        As Integer
-	nSmallLabel      As Integer
-	strSitzeGesamt   As String
-	strSitzeMehreit  As String
-	aMarkerFlag      As Array[String]
+	strElemName        As String
+	strTypeOfGraphic   As String
+	nGroups            As Integer
+	fTotalPieValue     As Double
+	aGroup             As Array[structGroupData]
+	nBigLabel          As Integer
+	nSmallLabel        As Integer
+	strSitzeGesamt     As String
+	strSitzeMehreit    As String
+	aMarkerFlag        As Array[String]
+	blnInfoPercentFlag As Boolean
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGroupData     As structGroupData
@@ -150,6 +152,7 @@ Sub OnInitParameters()
 	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu|spd|fdp|linke|oedp@cdu|spd|fdp|linke|oedp|rep", 55, 256, "")
 	RegisterParameterString("theSummary", "Sitze gesamt | absol. Mehrheit:", "160|81@162|82", 55, 256, "")
 	RegisterParameterString("theMarkerFlag", "Marker Flag 1, 2, 3 [1|1|0] - not assigned:", "0|0|0", 55, 10, "")
+	RegisterParameterBool("thePercentInfoFlag", "Show Info Percent", TRUE)
 	
 	RegisterParameterBool( "theColoredLabelFlag", "use colored labels", TRUE )
 	
@@ -225,6 +228,8 @@ Sub readGraphicsData()
 	
 	' get type of graphics
 	sGraphicsData.strTypeOfGraphic = GetParameterString("theTypeOfGraphic")
+	' get info percent label flag
+	sGraphicsData.blnInfoPercentFlag = GetParameterBool("thePercentInfoFlag")
 	' get pie data
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strPieSeparator, aPGroupEleList )
@@ -437,6 +442,9 @@ Sub updateScene_assignData()
 
 '- update 07.03.2017 -> define this value as global constant
 	dblLabelDistance = 89.3
+
+	' set visibility of info percent label
+	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
 
 For iPie = 0 To 0
 

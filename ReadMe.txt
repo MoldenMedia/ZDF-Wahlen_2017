@@ -19,9 +19,22 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-2017.03.22:
+2017.03.22/23:
 SceneScript_v2017
 - set max Viz value ANVPD  = 138.0
+
+moPlayout-Scripts:
+- add thePercentInfoFlag
+   . moPlayoutANSVZX_v2017*
+   . moPlayoutANNQRX_v2017*
+   . moPlayoutHROW_v2017
+   . moPlayoutHRPX_v2017
+   . moPlayoutHRSVS1_v2017
+   . moPlayoutHRWB_v2017
+   . moPlayoutUMKV_v2017
+   . moPlayoutUMKV3_v2017
+   . moPlayoutUMVB_v2017
+   . moPlayoutUMVX_v2017
 
 moPlayoutHRPX_v2017:
 - cleanup
