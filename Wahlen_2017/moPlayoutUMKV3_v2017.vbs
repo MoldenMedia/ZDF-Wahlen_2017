@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "23.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -52,7 +52,7 @@ Dim kLabelText1SubPath       As String = "$txt_label_1"
 Dim kLabelText2SubPath       As String = "$txt_label_2"
 Dim kLabelText3SubPath       As String = "$txt_label_3"
 
-
+Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 Dim kTextDataSubPath         As String = "$TXT_DATA"
 Dim kTextValueSubPath        As String = "$TXT_VALUE"
 Dim kTypoSubPath							 As String = "$TYPO"
@@ -90,13 +90,14 @@ Structure structGraphData
 End Structure
 '-------------------------------------------------------------------------------
 Structure structGraphicsData
-	strElemName As String
-	nGroups     As Integer
-	aGroup      As Array[structGraphData]
-	aGraphLabel As Array[String]
-	dblMinValue As Double
-	dblMaxValue As Double
-	dblMaxPos   As Double
+	strElemName        As String
+	nGroups            As Integer
+	aGroup             As Array[structGraphData]
+	aGraphLabel        As Array[String]
+	dblMinValue        As Double
+	dblMaxValue        As Double
+	dblMaxPos          As Double
+	blnInfoPercentFlag As Boolean
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGraphData    As structGraphData
@@ -137,12 +138,11 @@ Sub OnInitParameters()
 	RegisterParameterString("theValueTxt", "values formatted [39|36|15#...]:", "40|42*|41|44|43|46|45|48|47|49#30|32|31*|34|33|36|35|38|37|39#20|22|21|24*|23|26|25|28|27|29", 75, 2048, "")
 	RegisterParameterString("theValuePos", "value position [1|2|3#...]:", "1|2|3|4|5|6|7|8|9|10#1|2|3|4|5|6|7|8|9|10#1|2|3|4|5|6|7|8|9|10", 75, 2048, "")
 
-
 	RegisterParameterString("theAnimOrderFlag", "animation order flags [1|2#...]:", "1#2#3", 75, 55, "")
 	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu#spd#gruene", 75, 300, "")
-
 	RegisterParameterString("theRangeValues", "min/max values [0|50]:", "0|50", 25, 55, "")
-	
+	RegisterParameterBool("thePercentInfoFlag", "Show Info Percent", TRUE)
+
 	RegisterPushButton("btAssignValues", "assign values", 11)
 	RegisterInfoText(strInfoText)
 	RegisterPushButton("btAssignValuesDirect", "assign values direct", 21)
@@ -203,6 +203,8 @@ Sub readGraphicsData()
 '	fMaxVizValue = sGlobalParameter.dblMaxVizValueUMKV 
 '	fLabelHeight = sGlobalParameter.dblMaxVizValueHRLabHeight 
 	
+	' get info percent label flag
+	sGraphicsData.blnInfoPercentFlag = GetParameterBool("thePercentInfoFlag")
 	' get min/max values
 	strTemp = GetParameterString("theRangeValues")
 	strTemp.Split( strElementSeparator, aRangeValues )
@@ -353,6 +355,9 @@ Sub updateScene_assignData()
 	Scene._PlayoutAnimationSwap()
 	' clear animation
 	Scene._PlayoutAnimationClear( "IN" )
+
+	' set visibility of info percent label
+	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
 
 	' set graph labels
 	If sGraphicsData.aGraphLabel.UBound = 0 Then
@@ -650,6 +655,7 @@ Sub	setGraphLabelPerc()
 	tmp.CreateGeometry(geom_uuid)
 End Sub
 '-------------------------------------------------------------------------------
+
 
 
 

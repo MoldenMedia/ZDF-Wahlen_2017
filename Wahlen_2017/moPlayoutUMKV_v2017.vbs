@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "23.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -54,6 +54,7 @@ Dim kTextLabel1SubPath       As String = "$TXT_LABEL_1"
 Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
+Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 
 Dim nMaxNumGraphs            As Integer = 5
 
@@ -78,11 +79,12 @@ Structure structGroupData
 End Structure
 '-------------------------------------------------------------------------------
 Structure structGraphicsData
-	strElemName As String
-	nGroups     As Integer
-	aGroup      As Array[structGroupData]
-	dblMinValue As Double
-	dblMaxValue As Double
+	strElemName        As String
+	nGroups            As Integer
+	aGroup             As Array[structGroupData]
+	dblMinValue        As Double
+	dblMaxValue        As Double
+	blnInfoPercentFlag As Boolean
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGroupData    As structGroupData
@@ -125,9 +127,9 @@ Sub OnInitParameters()
 
 	RegisterParameterString("theAnimOrderFlag", "animation order flags [1|2#...]:", "1|2|3|4|5|6#1|2|3|4|5|6#1|2|3|4|5|6#1|2|3|4|5|6#1|2|3|4|5|6#1|2|3|4|5|6", 75, 55, "")
 	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu|spd|gruene|linke|fdp#cdu|spd|gruene|linke|fdp#cdu|spd|gruene|linke|fdp#cdu|spd|gruene|linke|fdp#cdu|spd|gruene|linke|fdp#cdu|spd|gruene|linke|fdp", 75, 300, "")
-
+	RegisterParameterBool("thePercentInfoFlag", "Show Info Percent", TRUE)
 	RegisterParameterString("theRangeValues", "min/max values [0|45]:", "0|45", 25, 55, "")
-	
+
 	RegisterPushButton("btAssignValues", "assign values", 11)
 	RegisterInfoText(strInfoText)
 	RegisterPushButton("btAssignValuesDirect", "assign values direct", 21)
@@ -178,6 +180,8 @@ Sub readGraphicsData()
 	fMaxVizValue = sGlobalParameter.dblMaxVizValueHRPZ 
 	fLabelHeight = sGlobalParameter.dblMaxVizValueHRLabHeight 
 	
+	' get info percent label flag
+	sGraphicsData.blnInfoPercentFlag = GetParameterBool("thePercentInfoFlag")
 	' get min/max values
 	strTemp = GetParameterString("theRangeValues")
 	strTemp.Split( strElementSeparator, aRangeValues )
@@ -272,6 +276,9 @@ Sub updateScene_assignData()
 	Scene._PlayoutAnimationSwap()
 	' clear animation
 	Scene._PlayoutAnimationClear( "IN" )
+
+	' set visibility of info percent label
+	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
 
 	For iGroup = 0 To sGraphicsData.nGroups
 		Scene.dbgOutput(1, strDebugLocation, "updating [iGroup]: [" & iGroup & "] ----------------------------------------------------")

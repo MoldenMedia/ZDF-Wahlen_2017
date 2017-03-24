@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "23.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -58,6 +58,7 @@ Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
 Dim kTextDiffSubPath         As String = "$txt_value_diff"
+Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 
 Dim kServerMaterialPath      As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/material/"
 
@@ -88,10 +89,11 @@ Structure structGroupData
 End Structure
 '-------------------------------------------------------------------------------
 Structure structGraphicsData
-	strElemName      As String
-	strTypeOfGraphic As String
-	nGroups          As Integer
-	aGroup           As Array[structGroupData]
+	strElemName        As String
+	strTypeOfGraphic   As String
+	blnInfoPercentFlag As Boolean
+	nGroups            As Integer
+	aGroup             As Array[structGroupData]
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGroupData    As structGroupData
@@ -136,7 +138,7 @@ Sub OnInitParameters()
 '	RegisterParameterString("theAnimStopFlag", "animation stop flags [1|1#...]:", "1|1|1|0|1|1|1|1", 55, 55, "")
 	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu|spd#fdp|linke|oedp|rep|mlpd|dvu", 55, 256, "")
 	RegisterParameterString("theRangeValues", "min/max values [0|45#0|65...]:", "0|0#0|0", 25, 55, "")
-	RegisterParameterBool("thePercentInfoFlag", "Show percent info line:", TRUE )
+	RegisterParameterBool("thePercentInfoFlag", "Show Info Percent", TRUE)
 
 	RegisterPushButton("btAssignValues", "assign values", 11)
 	RegisterPushButton("btAssignValuesDirect", "assign values direct", 21)
@@ -186,6 +188,8 @@ Sub readGraphicsData()
 	
 	' get type of graphics
 	sGraphicsData.strTypeOfGraphic = GetParameterString("theTypeOfGraphic")
+	' get info percent label flag
+	sGraphicsData.blnInfoPercentFlag = GetParameterBool("thePercentInfoFlag")
 	' get group data
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strGroupSeparator, aGroupEleList )
@@ -409,6 +413,9 @@ Sub updateScene_assignData()
 'println "DEBUG: [dblZeroPosY]: ["	& dblZeroPosY & "]" 
 'println "DEBUG: [scaleFactor = (fMaxVizValue-fMinVizValue-2*labelHeigth)/(fMaxRange-fMinRange)]: ["	& dblScaleFactor & "=(" & fMaxVizValue & "-" & fMinVizValue & "-2*" & sGlobalParameter.dblUMLabHeight & ")/(" & fMaxRange & "-" & fMinRange & ") = " & dblScaleFactor
 'println "DEBUG: [zeroPosY]: ["	& dblZeroPosY & "]" 
+
+	' set visibility of info percent label
+	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
 
 	For iGroup = 0 To sGraphicsData.nGroups
 
