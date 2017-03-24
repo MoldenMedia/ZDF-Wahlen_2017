@@ -44,11 +44,16 @@ Dim kArrowSubPath            As String = "$TRANS$ELE_ARROW"
 
 Dim kTextDataSubPath         As String = "$TXT_DATA"
 Dim kTextValueSubPath        As String = "$TXT_VALUE"
+Dim kTextValueDiffSubPath    As String = "$TXT_VALUE_DIFF"
 Dim kTextLabel1SubPath       As String = "$TXT_LABEL_1"
 Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
+Dim kDiffSubPath             As String = "$txt_diff"
 
+Dim kBannerSubPath           As String = "$objBanner"
+Dim kGroupBGSubPath          As String = "$objGroupBG"
+Dim kBarBGSubPath            As String = "$objBarBG"
 Dim kServerMaterialPath      As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/material/"
 
 '-------------------------------------------------------------------------------
@@ -445,7 +450,8 @@ Sub updateScene_assignData()
 				' always show some color
 				dblValue =  Scene._validateMinBarValue( dblValue, 0.3 )
 				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-	
+				' set offsets for multi-line banner
+				updateScene_LabelOffsetElement(sGraphicsData.strTypeOfGraphic, contElement, nVisibleLabel)
 				' set text value and labels
 				Scene._updateScene_assignLabel_3_2017( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue, nVisibleLabel )
 				contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath & kDiffSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aDiffTxt[iElement]
@@ -511,4 +517,5 @@ Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Conta
 	contElement.FindSubContainer( kBarBGSubPath ).FindKeyframeOfObject("k_value").FloatValue = bgMaxHeight - (nLabels-1)*kBannerStep
 End Sub
 '-------------------------------------------------------------------------------
+
 
