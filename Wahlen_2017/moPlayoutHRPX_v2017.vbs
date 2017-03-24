@@ -542,7 +542,7 @@ Sub updateScene_LabelOffsetGroup(typeOfGraphic As String, contGroup As Container
 	If typeOfGraphic = "HRPZ" Then
 		bgMaxHeight = kBGMaxHeightPZ
 	ElseIf typeOfGraphic = "HRPG" Or typeOfGraphic = "HRPZD" Then
-		bgMaxHeight = kBGMaxHeightPG
+		bgMaxHeight = kBGMaxHeightPD
 	Else
 		bgMaxHeight = kBGMaxHeightPZ
 	End If
@@ -577,6 +577,7 @@ Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Conta
 	contElement.FindSubContainer( kBarBGSubPath ).FindKeyframeOfObject("k_value").FloatValue = bgMaxHeight - (nLabels-1)*kBannerStep
 End Sub
 '-------------------------------------------------------------------------------
+
 
 
 
