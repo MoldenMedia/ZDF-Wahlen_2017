@@ -19,6 +19,21 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.24/25:
+moGenerateUM_v2017:
+- add dimensions for horizontal bar variants
+
+moPlayoutUMHX_v2017:
+- started
+- adapted material path and assignments
+- removed mirror and arrow references
+- add thePercentInfoFlag
+
+SceneScript_v2017:
+- set dblMaxVizValueUMHP  = 165.0
+- set dblMaxVizValueUMHPD = 120.0
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.22/23:
 SceneScript_v2017
 - set max Viz value ANVPD  = 138.0

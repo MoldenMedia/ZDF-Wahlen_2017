@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
-Dim theAuthor           As String = "tm"
+Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "09.03.2017"
+Dim theDateModified     As String = "24.03.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -36,13 +36,13 @@ Dim kMaxWidth      As Double = 1738.0  ' maximal diagram width    : 1738 pixel
 Dim kVBarGap       As Double =   25.0  ' gap between bars         :   25 pixel
 Dim kVGroupGap     As Double =   80.0  ' gap between groups       :   80 pixel
 
-' bar width deimensions for Hochrechnung
+' bar width dimensions for Hochrechnung
 Dim kHRBarWidth_1_5  As Double = 245
 Dim kHRBarWidth_6_7  As Double = 208
 Dim kHRBarWidth_8    As Double = 195
 Dim kHRBarWidth_9    As Double = 170
 
-' bar width deimensions for SVZ and NQR
+' bar width dimensions for SVZ and NQR
 ' use this values when bar prototypes had been built 
 Dim kVBarWidth_1_5   As Double = 245.0
 Dim kVBarWidth_6_7   As Double = 245.0
@@ -55,6 +55,23 @@ Dim kHBarGap        As Double =  4.0
 Dim kHGroupGap      As Double =  4.0
 Dim knHMaxGroups    As Integer = 20
 Dim knHMaxTotalBars As Integer = 20
+
+Dim kHBarWidth_100h As Double = 100.0
+Dim kHBarBaGap_100h As Double = 12.0
+Dim kHBarGrGap_100h As Double = 100.0
+Dim kHBarWidth_78h  As Double = 78.0
+Dim kHBarBaGap_78h  As Double = 12.0
+Dim kHBarGrGap_78h  As Double = 72.0
+Dim kHBarWidth_57h  As Double = 57.0
+Dim kHBarBaGap_57h  As Double = 9.0
+Dim kHBarGrGap_57h  As Double = 56.0
+Dim kHBarWidth_48hw As Double = 48.0
+Dim kHBarBaGap_48hw As Double = 7.0
+Dim kHBarGrGap_48hw As Double = 48.0
+Dim kHBarWidth_48hs As Double = 48.0 
+Dim kHBarBaGap_48hs As Double = 7.0
+Dim kHBarGrGap_48hs As Double = 7.0
+
 '-------------------------------------------------------------------------------
 ' STRUCTURE definitions
 '-------------------------------------------------------------------------------
@@ -119,7 +136,12 @@ Sub OnInitParameters()
 	aTypeOfBar.Push("6-7b")
 	aTypeOfBar.Push("8b")
 	aTypeOfBar.Push("9b")
-
+	aTypeOfBar.Push("100h")
+	aTypeOfBar.Push("78h")
+	aTypeOfBar.Push("57h")
+	aTypeOfBar.Push("48hw")
+	aTypeOfBar.Push("48hs")
+	
 	RegisterParameterString("theGraphicName", "graphic name [gUMVP_24]:", "/GENERATED/gUMVP_24", 25, 55, "")
 	RegisterParameterString("theTypeOfGraph", "type of graph [UMVP|UMVD|...]:", "UMVP", 25, 55, "")
 	RegisterParameterString("theTypeOfBar", "type of bar [gUMVP_8b|...]:", "gUMVP_8b", 25, 55, "")
@@ -212,33 +234,49 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
 
 		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
-		' gaps between groups and bars are constant for all combinations in the redesign 2017
-		sGraphicDetails.fGroupGap        = kVGroupGap
-		sGraphicDetails.fElemGap         = kVBarGap
 
-		' assign width defined by type of bar
-'		Select Case sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
-'			Case "UMVP_1-5b" 
-'				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
-'			Case "UMVP_6-7b" 
-'				 sGraphicDetails.fElemWidth = kVBarWidth_6_7
-'			Case "UMVP_8b"   
-'				 sGraphicDetails.fElemWidth = kVBarWidth_8
-'			Case "UMVP_9b"   
-'				 sGraphicDetails.fElemWidth = kVBarWidth_9
-'			Case Else         
-'				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
+		' assign width and gaps defined by type of bar
 		Select Case sGraphicDetails.strTypeOfBar
-			Case "1-5b" 
+			Case "1-5b"
 				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
-			Case "6-7b" 
+				 sGraphicDetails.fGroupGap  = kVGroupGap
+				 sGraphicDetails.fElemGap   = kVBarGap
+			Case "6-7b"
 				 sGraphicDetails.fElemWidth = kVBarWidth_6_7
-			Case "8b"   
+				 sGraphicDetails.fGroupGap  = kVGroupGap
+				 sGraphicDetails.fElemGap   = kVBarGap
+			Case "8b"
 				 sGraphicDetails.fElemWidth = kVBarWidth_8
-			Case "9b"   
+				 sGraphicDetails.fGroupGap  = kVGroupGap
+				 sGraphicDetails.fElemGap   = kVBarGap
+			Case "9b"
 				 sGraphicDetails.fElemWidth = kVBarWidth_9
-			Case Else         
-				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
+				 sGraphicDetails.fGroupGap  = kVGroupGap
+				 sGraphicDetails.fElemGap   = kVBarGap
+			Case "100h"
+				 sGraphicDetails.fElemWidth = kHBarWidth_100h
+				 sGraphicDetails.fGroupGap  = kHBarGrGap_100h
+				 sGraphicDetails.fElemGap   = kHBarBaGap_100h
+			Case "78h"
+				 sGraphicDetails.fElemWidth = kHBarWidth_78h
+				 sGraphicDetails.fGroupGap  = kHBarGrGap_78h
+				 sGraphicDetails.fElemGap   = kHBarBaGap_78h
+			Case "57h"
+				 sGraphicDetails.fElemWidth = kHBarWidth_57h
+				 sGraphicDetails.fGroupGap  = kHBarGrGap_57h
+				 sGraphicDetails.fElemGap   = kHBarBaGap_57h
+			Case "48hw"
+				 sGraphicDetails.fElemWidth = kHBarWidth_48hw
+				 sGraphicDetails.fGroupGap  = kHBarGrGap_48hw
+				 sGraphicDetails.fElemGap   = kHBarBaGap_48hw
+			Case "48hs"
+				 sGraphicDetails.fElemWidth = kHBarWidth_48hs
+				 sGraphicDetails.fGroupGap  = kHBarGrGap_48hs
+				 sGraphicDetails.fElemGap   = kHBarBaGap_48hs
+			Case Else
+				 sGraphicDetails.fElemWidth = kVBarWidth_6_7
+				 sGraphicDetails.fGroupGap  = kVGroupGap
+				 sGraphicDetails.fElemGap   = kVBarGap
 		End Select
 
 'Scene.dbgOutput(1, strDebugLocation, "[select case]: [" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar & "].........................")

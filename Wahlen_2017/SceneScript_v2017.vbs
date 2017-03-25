@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "22.03.2017"
+Dim theDateModified     As String = "25.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -128,8 +128,8 @@ Sub OnInitParameters()
 	RegisterParameterDouble("theMaxVizValueUMVB", "max Viz value UMVB", 60.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMVP", "max Viz value UMVP", 167.0, 10.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMVD", "max Viz value UMVD", 81.0, 5.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMHP", "max Viz value UMHP", 125.0, 50.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueUMHPD", "max Viz value UMHPD", 104.0, 50.0, 150.0)
+	RegisterParameterDouble("theMaxVizValueUMHP", "max Viz value UMHP", 165.0, 50.0, 200.0)
+	RegisterParameterDouble("theMaxVizValueUMHPD", "max Viz value UMHPD", 120.0, 50.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMAS", "max Viz value UMAS", 53.5, 5.0, 200.0)
 	RegisterParameterDouble("theMaxVizValueUMKB", "max Viz value UMKB", 47.0, 10.0, 150.0)
 	RegisterParameterDouble("theMaxVizValueUMKV", "max Viz value UMKV", 125.0, 0.0, 150.0)
@@ -1198,4 +1198,5 @@ End Sub
 Function GetHRSVK2_Variant() as Integer
 	GetHRSVK2_Variant = iHRSVK2_Variant
 End Function
+
 

@@ -48,7 +48,6 @@ Dim kDataSubPath             As String = "$DATA"
 'Dim kBar2SubPath             As String = "$TRANS$G1_E2$DATA"
 
 Dim kBarColoredSubPath       As String = "$obj_geom"
-Dim kArrowSubPath            As String = "$TRANS$ELE_ARROW"
 
 Dim kTextDataSubPath         As String = "$TXT_DATA"
 Dim kTextValueSubPath        As String = "$TXT_VALUE"
