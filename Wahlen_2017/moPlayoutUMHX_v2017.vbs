@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "25.03.2017"
+Dim theDateModified     As String = "26.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -52,6 +52,7 @@ Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
 Dim kValueSubPath            As String = "$txt_value"
+Dim kLabelSubPath            As String = "$txt_label"
 Dim kUnitSubPath             As String = "$txt_unit"
 Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 
@@ -179,28 +180,22 @@ Sub readGraphicsData()
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strGroupSeparator, aGroupEleList )
 	strTemp = GetParameterString("theGroupLabel")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aGroupLabList )
 	strTemp = GetParameterString("theLabel1")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aEleLabel1 )
 	strTemp = GetParameterString("theLabel2")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aEleLabel2 )
 	strTemp = GetParameterString("theLabel3")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aEleLabel3 )
 	strTemp = GetParameterString("theMaterial")
 	strTemp.Split( strGroupSeparator, aEleMaterial )
 	strTemp = GetParameterString("theValueNum")
 	strTemp.Split( strGroupSeparator, aEleValueNum )
 	strTemp = GetParameterString("theValueTxt")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aEleValueTxt )
 	strTemp = GetParameterString("theDiffNum")
 	strTemp.Split( strGroupSeparator, aEleDiffNum )
 	strTemp = GetParameterString("theDiffTxt")
-	strTemp.AnsiToUTF8()
 	strTemp.Split( strGroupSeparator, aEleDiffTxt )
 	strTemp = GetParameterString("theAnimOrderFlag")
 	strTemp.Split( strGroupSeparator, aEleAnimOrder )
@@ -291,6 +286,7 @@ Sub updateScene_assignData()
 	Dim cntIdx As Integer
 	Dim dblValue As Double
 	Dim iGroup, iElement As Integer
+	Dim fObjGeomPosX, fobjGeomMax, fTxtDataPosX, fTxtLabelPosX, fObjLabelBGHeight As Double
 
 	' remember previous animation details
 	Scene._PlayoutAnimationSwap()
@@ -298,7 +294,7 @@ Sub updateScene_assignData()
 	Scene._PlayoutAnimationClear( "IN" )
 
 	' set visibility of info percent label
-	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
+	contBlenderElementIN.FindSubcontainer( kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
 
 	For iGroup = 0 To sGraphicsData.nGroups
 		Scene.dbgOutput(1, strDebugLocation, "updating [iGroup]: [" & iGroup & "] ----------------------------------------------------")
@@ -311,6 +307,26 @@ Sub updateScene_assignData()
 		strHelp = sGraphicsData.aGroup[iGroup].strLabel
 		strHelp.Substitute("[_]", "\n", TRUE)
 		contGroup.FindSubcontainer( kTextGroupLabelSubPath ).Geometry.Text = strHelp
+
+		' define graph values depending on group label content
+		strHelp.Trim()
+		If strHelp = "" Then
+
+			fObjGeomPosX      = 35.0
+			fobjGeomMax       = 275.0
+			fTxtDataPosX      = 0.0
+			fTxtLabelPosX     = -137.5
+			fObjLabelBGHeight = 275
+
+		Else
+
+			fObjGeomPosX      = 121.0
+			fobjGeomMax       = fMaxVizValue  ' 150.0
+			fTxtDataPosX      = 85.0
+			fTxtLabelPosX     = -109.0
+			fObjLabelBGHeight = 218.0
+
+		End If
 		
 		For iElement = 0 To sGraphicsData.aGroup[iGroup].nElements - 1
 			Scene.dbgOutput(1, strDebugLocation, "updating [iElement]: [" & iElement & "] ..................................................")
@@ -320,6 +336,14 @@ Sub updateScene_assignData()
 			contElement = contGroup.FindSubcontainer( kTransSubPath & tmpGroupName & tmpElementName )
 			Scene.dbgOutput(1, strDebugLocation, "[contElement.Name]: [" & contElement.Name & "]")
 
+			
+			' set graph values depending on group label content
+			contElement.FindSubContainer("$DATA$obj_geom").Position.X = fObjGeomPosX
+			contElement.FindSubContainer(kDataSubPath & kTextDataSubPath).Position.X = fTxtDataPosX
+			fMaxVizValue = fobjGeomMax
+			contElement.FindSubContainer(kDataSubPath & kTextLabel1SubPath & kLabelSubPath).Position.X = fTxtLabelPosX
+			contElement.FindSubContainer(kDataSubPath & kTextLabel1SubPath & "$objLabelBG").Geometry.PluginInstance.SetParameterDouble("height", fObjLabelBGHeight)
+			
 			' calculate and set animation value
 			dblValue = CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
 			dblValue = dblValue * fMaxVizValue / fMaxBarValue
@@ -336,14 +360,14 @@ Sub updateScene_assignData()
 				contElement.FindSubContainer(kDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
 				contElement.FindSubContainer(kDataSubPath & kTextDiffSubPath).Active = FALSE
 				' set text value and labels
-				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
 			End If
+			
 			' check for empty labels
 			If sGraphicsData.aGroup[iGroup].aValueTxt[iElement] = "" Then
 				contElement.FindSubContainer(kDataSubPath & kTextValueSubPath & kUnitSubPath).Active = FALSE
 			End If
-			
-			
+
 			' set element material
 			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath  & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
 			tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
@@ -359,3 +383,4 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
+

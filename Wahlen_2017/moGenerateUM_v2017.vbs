@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "24.03.2017"
+Dim theDateModified     As String = "26.03.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -41,6 +41,7 @@ Dim kHRBarWidth_1_5  As Double = 245
 Dim kHRBarWidth_6_7  As Double = 208
 Dim kHRBarWidth_8    As Double = 195
 Dim kHRBarWidth_9    As Double = 170
+
 
 ' bar width dimensions for SVZ and NQR
 ' use this values when bar prototypes had been built 
@@ -89,7 +90,6 @@ Structure structGraphicDetails
 	fElemGap         As Double
 	fElemWidth       As Double
 	fXOffset         As Double
-	blnValidated     As Boolean
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGraphicDetails As structGraphicDetails
@@ -168,10 +168,10 @@ Sub OnParameterChanged(parameterName As String)
 	Dim strBarName, strTemp As String
 	
 	If parameterName = "theTypeOfGraphSelect" Or parameterName = "theTypeOfBarSelect" Then
-'        strGraphicName = "g" & aTypeOfGraph[ GetParameterInt("theTypeOfGraphSelect") ] & "_" & aTypeOfBar[ GetParameterInt("theTypeOfBarSelect") ]
+
 		this.ScriptPluginInstance.SetParameterString( "theTypeOfGraph", aTypeOfGraph[ GetParameterInt("theTypeOfGraphSelect") ] )
-'		strBarName = "g" & aTypeOfGraph[ GetParameterInt("theTypeOfGraphSelect") ] & "_" & aTypeOfBar[ GetParameterInt("theTypeOfBarSelect") ]
 		this.ScriptPluginInstance.SetParameterString( "theTypeOfBar", aTypeOfBar[ GetParameterInt("theTypeOfBarSelect") ] )
+
 	End If
 	
 End Sub
@@ -182,7 +182,6 @@ Sub OnInit()
 	Scene.dbgRegisterFunction( strScriptName )
 	
 	sGlobalParameter = (Scene.structGlobalParameter) Scene.Map["sGlobalParameter"]
-
 	contEleDestination = Scene.FindContainer("$ALL$CONTENT$ELE_PLAYOUT$ELE_ANIMATION$moBLENDER$IN$ELEMENT")
 	
 	Scene.dbgClearOnScreenError()
@@ -195,21 +194,29 @@ Sub OnExecAction(buttonId As Integer)
 
 	Scene.dbgClearOnScreenError()
 	Scene.dbgOutput(1, strDebugLocation, "[buttonId]: [" & buttonId & "]")
+
 	If buttonID = 11 Then
+
 		' create geometry
 		deleteGeometry()
 		deleteChildren()
 		createGeometry()
+
 	ElseIf buttonID = 21 Then
+
 		' get global parameter
 		sGlobalParameter = (Scene.structGlobalParameter)	Scene.Map["sGlobalParameter"]
 		' export geometry
 		exportGeometry( sGlobalParameter.strGlobGeomSourcePath, sGraphicDetails.strGraphicName )
 		deleteChildren()
+
 	ElseIf buttonID = 31 Then
+
 		deleteChildren()
 '		deleteGeometry()
+
 	End If
+
 End Sub
 
 '-------------------------------------------------------------------------------
@@ -222,17 +229,18 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 	If strTypeOfGraphics = "UMVerticalX" Then
 	
 		sGraphicDetails.strGraphicName   = GetParameterString( "theGraphicName" )
-		sGraphicDetails.strTypeOfGraph   = GetParameterString( "theTypeOfGraph" ) 
+		sGraphicDetails.strTypeOfGraph   = GetParameterString( "theTypeOfGraph" )
+		
 		' set strTypeOfBar for UMVPD=UMVP
 		If sGraphicDetails.strTypeOfGraph = "UMVPD" Then
 			sGraphicDetails.strTypeOfGraph = "UMVP"
 		End If
+		
 		' theTypeOfBarSelect
 		sGraphicDetails.strTypeOfBar     = GetParameterString( "theTypeOfBar" ) 
 		sGraphicDetails.strGRefBaseName  = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Base"
 		sGraphicDetails.strGRefGroupName = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Group"
 		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
-
 		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
 
 		' assign width and gaps defined by type of bar
@@ -253,6 +261,30 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 				 sGraphicDetails.fElemWidth = kVBarWidth_9
 				 sGraphicDetails.fGroupGap  = kVGroupGap
 				 sGraphicDetails.fElemGap   = kVBarGap
+			Case Else
+				 sGraphicDetails.fElemWidth = kVBarWidth_1_5
+				 sGraphicDetails.fGroupGap  = kVGroupGap
+				 sGraphicDetails.fElemGap   = kVBarGap
+		End Select
+
+		sGraphicDetails = calcGapsAndOffset_UMVerticalX( sGraphicDetails )
+	
+	ElseIf strTypeOfGraphics = "UMHorizontalX" Then
+	
+		sGraphicDetails.strGraphicName   = GetParameterString( "theGraphicName" )
+		sGraphicDetails.strTypeOfGraph   = GetParameterString( "theTypeOfGraph" ) 
+	
+		' theTypeOfBarSelect
+		sGraphicDetails.strTypeOfBar     = GetParameterString( "theTypeOfBar" ) 
+		sGraphicDetails.strGRefBaseName  = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Base"
+		sGraphicDetails.strGRefGroupName = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_Group"
+		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar
+		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
+		
+		' set initial horizontal offset
+		sGraphicDetails.fXOffset = 0.0
+		' assign width and gaps defined by type of bar
+		Select Case sGraphicDetails.strTypeOfBar
 			Case "100h"
 				 sGraphicDetails.fElemWidth = kHBarWidth_100h
 				 sGraphicDetails.fGroupGap  = kHBarGrGap_100h
@@ -274,31 +306,11 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 				 sGraphicDetails.fGroupGap  = kHBarGrGap_48hs
 				 sGraphicDetails.fElemGap   = kHBarBaGap_48hs
 			Case Else
-				 sGraphicDetails.fElemWidth = kVBarWidth_6_7
-				 sGraphicDetails.fGroupGap  = kVGroupGap
-				 sGraphicDetails.fElemGap   = kVBarGap
+				 sGraphicDetails.fElemWidth = kHBarWidth_57h
+				 sGraphicDetails.fGroupGap  = kHBarGrGap_57h
+				 sGraphicDetails.fElemGap   = kHBarBaGap_57h
 		End Select
 
-'Scene.dbgOutput(1, strDebugLocation, "[select case]: [" & sGraphicDetails.strTypeOfGraph & "_" & sGraphicDetails.strTypeOfBar & "].........................")
-'Scene.dbgOutput(1, strDebugLocation, "[kVBarWidth_1_5]: [" & kVBarWidth_1_5 & "].........................")
-'Scene.dbgOutput(1, strDebugLocation, "[kVBarWidth_6_7]: [" & kVBarWidth_6_7 & "].........................")
-'Scene.dbgOutput(1, strDebugLocation, "[kVBarWidth_8]: [" & kVBarWidth_8 & "].........................")
-'Scene.dbgOutput(1, strDebugLocation, "[kVBarWidth_9]: [" & kVBarWidth_9 & "].........................")
-'Scene.dbgOutput(1, strDebugLocation, "[fElemWidth]: [" & sGraphicDetails.fElemWidth & "].........................")
-		sGraphicDetails = calcGapsAndOffset_UMVerticalX( sGraphicDetails )
-	
-	ElseIf strTypeOfGraphics = "UMHorizontalX" Then
-
-		sGraphicDetails.strGraphicName   = GetParameterString( "theGraphicName" )
-		sGraphicDetails.strTypeOfGraph   = GetParameterString( "theTypeOfGraph" ) 
-		sGraphicDetails.strTypeOfBar     = GetParameterString( "theTypeOfBar" ) 
-		sGraphicDetails.strGRefBaseName  = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/gUMHX_Base"
-		sGraphicDetails.strGRefGroupName = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/gUMHX_Group"
-		sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_2017/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/gUMHX_"
-		sGraphicDetails.strNumBars       = GetParameterString( "theNumBars" )
-	
-		sGraphicDetails = calcGapsAndOffset_UMHorizontalX( sGraphicDetails )
-	
 	End If	
 	
 	Scene.dbgOutput(1, strDebugLocation, "[strTypeOfGraph]: [" & sGraphicDetails.strTypeOfGraph & "]")
@@ -312,7 +324,6 @@ Sub readGeometryDetails( strTypeOfGraphics As String )
 	Scene.dbgOutput(1, strDebugLocation, "[fElemGap]: [" & sGraphicDetails.fElemGap & "]")
 	Scene.dbgOutput(1, strDebugLocation, "[fElemWidth]: [" & sGraphicDetails.fElemWidth & "]")
 	Scene.dbgOutput(1, strDebugLocation, "[fXOffset]: [" & sGraphicDetails.fXOffset & "]")
-	Scene.dbgOutput(1, strDebugLocation, "[blnValidated]: [" & sGraphicDetails.blnValidated & "]")
 
 	Scene.dbgOutput(1, strDebugLocation, "reading geometry details .DONE.")
 
@@ -342,11 +353,8 @@ Sub createGeometry()
 		Scene.dbgOutput(3, strDebugLocation, "creating geometry [" & sGraphicDetails.strTypeOfGraph & "]..")
 		' read geometry details
 		readGeometryDetails("UMVerticalX")
-
-		If sGraphicDetails.blnValidated = TRUE Then
-			' build geometry
-			createGeometry_UMVerticalX()
-		End If
+		' build geometry
+		createGeometry_UMVerticalX()
 
 	' Horizontal Bars
 	ElseIf sGraphicDetails.strTypeOfGraph = "UMHP" Or sGraphicDetails.strTypeOfGraph = "UMHPD" Then
@@ -354,26 +362,15 @@ Sub createGeometry()
 		Scene.dbgOutput(4, strDebugLocation, "creating geometry [" & sGraphicDetails.strTypeOfGraph & "]....")
 		' read geometry details
 		readGeometryDetails("UMHorizontalX")
-
-		If sGraphicDetails.blnValidated = TRUE Then
-			' build geometry
-			createGeometry_UMHorizontalX()
-		End If
+		' build geometry
+		createGeometry_UMHorizontalX()
 
 	End If
 
 	Scene.dbgOutput(5, strDebugLocation, "creating geometry .DONE.")
 End Sub
 
-'	' swap geometry
-'	contBlenderOUT.deleteGeometry()
-'	contBlenderOUT.Geometry = contBlenderIN.Geometry
-'	contBlenderIN.deleteGeometry()
-'	contBlenderIN.CreateGeometry( Scene.sGlobalParameter.strGlobGeomGeneratePath & GetParameterString("theTypeOfGraphics") )
-' 	System.SendCommand( "#" & contGeomBase.vizID & "*GEOM MERGE 0" )
-
 '-------------------------------------------------------------------------------
-' modified 08.01.2017 by tm
 '
 Sub createGeometry_UMVerticalX()
 	Dim strDebugLocation As String = strScriptName & "createGeometry_UMVerticalX():"
@@ -387,8 +384,6 @@ Sub createGeometry_UMVerticalX()
 	Dim vBoundingBox As Vertex
 	
 	Scene.dbgOutput(1, strDebugLocation, "create .START.")
-	' build name of reference bar
-'		strBarReferenceName = "GEOM*ZDFWahlen_v3/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGeometryDetails.strBarBaseName & "_" & strPostfix
 
 	' create base container and assign name
 	contGeomBase = contEleDestination.AddContainer(TL_DOWN)
@@ -396,16 +391,16 @@ Sub createGeometry_UMVerticalX()
 	contGeomBase.CreateGeometry( sGraphicDetails.strGRefBaseName )
 	System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
 	sGraphicDetails.strNumBars.Split("#", aString)
+	
 	' create groups and elements
-	fGroupPosX = sGraphicDetails.fXOffset * kVizToPixelRatio
 	For iGroup = 1 To aString.UBound + 1
+	
 		Scene.dbgOutput(1, strDebugLocation, "processing [iGroup] [nElem]: [" & iGroup & "] [" & aString[iGroup-1] & "]")
 		contGroup = contGeomBase.FindSubContainer("$TRANS").AddContainer(TL_DOWN)
 		contGroup.Name = strGroupBaseName & iGroup
 		contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName ) 
 		System.SendCommand( "#" & contGroup.vizID & "*GEOM SPLIT" )
 
-		' modified 01.02.2017, 07.02.2017
 		' Calculate banner and background width
 		contGroupGfxEle = contGroup.FindSubContainer("$GFX_ELE")
 		fBannerWidth = (CInt(aString[iGroup-1])-1)*kVBarGap + CInt(aString[iGroup-1])*sGraphicDetails.fElemWidth
@@ -414,6 +409,7 @@ Scene.dbgOutput(1, strDebugLocation, "[fBannerWidth]: [" & fBannerWidth & "] ...
 Scene.dbgOutput(1, strDebugLocation, "[kVizToPixelRatio]: [" & kVizToPixelRatio & "] ...............kVizToPixelRatio........")
 Scene.dbgOutput(1, strDebugLocation, "[fBannerWidth]: [" & fBannerWidth & "] ...............in viz units........")
 		contGroupGfxEle.FindSubContainer("$objBanner").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
+		
         If sGraphicDetails.strTypeOfGraph = "UMVD" Then
 		' set background for pos and neg panel
 			contGroupGfxEle.FindSubContainer("$objGroupBG_pos").Geometry.PluginInstance.SetParameterDouble("width", fBannerWidth)
@@ -425,22 +421,24 @@ Scene.dbgOutput(1, strDebugLocation, "[fBannerWidth]: [" & fBannerWidth & "] ...
 
 		' set position
 		If iGroup = 1 Then
+
+			fGroupPosX = sGraphicDetails.fXOffset * kVizToPixelRatio
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
 			contGroup.Position.X = fGroupPosX
 			
 		ElseIf iGroup > 1 Then
-' modified 30.01.2017
-'			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemWidth+sGraphicDetails.fElemGap) - sGraphicDetails.fElemGap
-			' modified 14.02.2017
+
 			' fGroupPosX is fBannerWidth of previous group + GroupGap*VizToPixelRatio
-			fHelp = (CInt(aString[iGroup-2])-1)*kVBarGap + CInt(aString[iGroup-2])*sGraphicDetails.fElemWidth
+			fHelp = (CInt(aString[iGroup-2])-1)*sGraphicDetails.fElemGap + CInt(aString[iGroup-2])*sGraphicDetails.fElemWidth
 			fGroupPosX = fGroupPosX + (fHelp + sGraphicDetails.fGroupGap) * kVizToPixelRatio
-'			fGroupPosX = fGroupPosX + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemGap) - sGraphicDetails.fElemWidth
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosX & "]")
 			contGroup.Position.X = fGroupPosX
+
 		End If
+		
 		' create elements in group
 		For iElem = 1 To CInt(aString[iGroup-1])
+
 			Scene.dbgOutput(1, strDebugLocation, "processing [iElem]: [" & iElem & "]")
 			contElement = contGroup.FindSubContainer("$TRANS").AddContainer(TL_DOWN)
 			contElement.Name = strGroupBaseName & iGroup & strElemBaseName & iElem
@@ -449,36 +447,40 @@ Scene.dbgOutput(1, strDebugLocation, "[fBannerWidth]: [" & fBannerWidth & "] ...
 			contElement.CreateGeometry( sGraphicDetails.strGRefBarName ) 
 '			contElement.CreateGeometry( sGraphicDetails.strTypeOfBar ) 
 '			System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
+
 			' set position
 			If iElem = 1 Then
+
 				fElemPosX = 0.5*sGraphicDetails.fElemWidth
 				Scene.dbgOutput(1, strDebugLocation, "[fOffsetX]: [" & fElemPosX & "]")
 				contElement.Position.X = fElemPosX * kVizToPixelRatio
+
 			ElseIf iElem > 1 Then
-' modified 30.01.2017
+
 				fElemPosX = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth ) + 0.5*sGraphicDetails.fElemWidth
 				Scene.dbgOutput(1, strDebugLocation, "[fOffsetX]: [" & fElemPosX & "]")
 				contElement.Position.X = fElemPosX * kVizToPixelRatio
+
 			End If
+
 		Next
+		
 		' set group label position
 		contGroup.FindSubContainer("$GROUP_LABEL").Position.X = 0.0
-'		contGroup.FindSubContainer("$GROUP_LABEL").Position.X = -0.5*sGraphicDetails.fElemWidth
-'		contGroup.FindSubContainer("$GROUP_LABEL").Position.X = 0.5*(sGraphicDetails.fElemWidth*CDbl(aString[iGroup-1]) + sGraphicDetails.fElemGap*(CDbl(aString[iGroup-1])-1))
+
 	Next
+
 	Scene.dbgOutput(1, strDebugLocation, "create .DONE.")
 	
 End Sub
 
 '-------------------------------------------------------------------------------
-' modified 30.01.2017 by tm
 '
 Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails ) As structGraphicDetails
 	Dim strDebugLocation As String = strScriptName & "calcGapsAndOffset_UMVerticalX():"
-	Dim strErrorTitle, strErrorMessage As String
 	Dim tmpString As String
 	Dim aNumBars As Array[String]
-	Dim iGroup, numGroups, numBars, numBarsInGroup As Integer
+	Dim iGroup, numGroups, numBars As Integer
 	Dim fTotalWidth As Double
 
 	Scene.dbgOutput(1, strDebugLocation, "[sGraphicDetails.strNumBars]: [" & sGraphicDetails.strNumBars & "]")
@@ -486,81 +488,22 @@ Function calcGapsAndOffset_UMVerticalX( sGraphicDetails As structGraphicDetails 
 	tmpString = sGraphicDetails.strNumBars
 	tmpString.Split("#", aNumBars)
 
-' bar width deimensions for SVZ and NQR
-' Dim kVBarWidth_1_5    As Double = 245.0
-' Dim kVBarWidth_6_7    As Double = 245.0
-' Dim kVBarWidth_8      As Double = 170.0
-' Dim kVBarWidth_9      As Double = 164.0
+	' get number of groups and total number of bars
+	numBars = 0
+	numGroups = aNumBars.UBound
 
-' no limitation of maxnumber groups requested
-	If aNumBars.UBound <= knMaxGroups Then
+	For iGroup = 0 To numGroups
+		numBars = numBars + CInt(aNumBars[iGroup])
+	Next
 
-		numBars = 0
-		numGroups = aNumBars.UBound
-		For iGroup = 0 To numGroups
-			numBars = numBars + CInt(aNumBars[iGroup])
-		Next
-		Scene.dbgOutput(1, strDebugLocation, "[aNumBars.UBound] [numBars]: [" & aNumBars.UBound & "] [" & numBars & "]")
+	Scene.dbgOutput(1, strDebugLocation, "[numGroups] [numBars]: [" & numGroups & "] [" & numBars & "]")
+	' calculate total width of graphic
+	fTotalWidth = numBars*sGraphicDetails.fElemWidth + (numBars-1)*sGraphicDetails.fElemGap + numGroups*sGraphicDetails.fGroupGap 
+	' offset graph to left
+	sGraphicDetails.fXOffset = (-0.5)*fTotalWidth
 
-		If numBars <= knMaxTotalBars Then
-
-'xxxxxxxxxxxxxxxx
-'
-'			If numBars >= 1 And numBars <= 5 Then
-'				sGraphicDetails.fElemWidth = kVBarWidth_1_5
-'			ElseIf numBars >= 6 And numBars <= 7 Then
-'				sGraphicDetails.fElemWidth = kVBarWidth_6_7
-'			ElseIf numBars = 8 Then
-'				sGraphicDetails.fElemWidth = kVBarWidth_8
-'			ElseIf numBars >= 9 And numBars <= knMaxTotalBars Then
-'				sGraphicDetails.fElemWidth = kVBarWidth_9
-'			Else
-'				strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
-'				strErrorMessage = "wrong number of total bars: [" & numBars & "]\n"
-'				strErrorMessage = strErrorMessage & "number of total bars allowed: [" & knMaxTotalBars & "]"
-'				Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
-'			End If
-'
-println strDebugLocation & "[numGroups]: [" & numGroups & "]"
-println strDebugLocation & "[numBars]: [" & numBars & "]"
-println strDebugLocation & "[fElemWidth]: [" & sGraphicDetails.fElemWidth & "].....default..........................."
-println strDebugLocation & "[fGroupGap]: [" & sGraphicDetails.fGroupGap & "]"
-println strDebugLocation & "[fElemGap]: [" & sGraphicDetails.fElemGap & "]"
-
-			fTotalWidth = sGraphicDetails.fElemWidth * numBars
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars..........................."
-			fTotalWidth = fTotalWidth + (numBars-1) * sGraphicDetails.fElemGap
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+bargap..........................."
-
-If numGroups > 1 Then
-			fTotalWidth = fTotalWidth + (numGroups - 1) * sGraphicDetails.fGroupGap
-'			fTotalWidth = fTotalWidth + numGroups * sGraphicDetails.fGroupGap
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+bargap+groups...................."
-'			fTotalWidth = fTotalWidth + (numBars - numGroups - 1) * sGraphicDetails.fElemGap
-End If				
-
-			Scene.dbgOutput(1, strDebugLocation, "[fTotalWidth]: [" & fTotalWidth & "]")
-'println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "]............................"
-
-'			sGraphicDetails.fXOffset = 0.5 * (kMaxWidth - fTotalWidth) + kBaseOffsetX
-			sGraphicDetails.fXOffset = 0.0
-println strDebugLocation & "[fXOffset]: [" & sGraphicDetails.fXOffset & "]............................"
-
-			sGraphicDetails.blnValidated = TRUE
-
-		Else
-			strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
-			strErrorMessage = "current number of total bars: [" & numBars & "]\n"
-			strErrorMessage = strErrorMessage & "max number of total bars allowed: [" & knMaxTotalBars & "]"
-			Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
-		End If
-		
-	Else
-		strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
-		strErrorMessage = "current number of groups: [" & aNumBars.UBound & "]\n"
-		strErrorMessage = strErrorMessage & "max number of groups allowed: [" & knMaxGroups & "]"
-		Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
-	End If
+	Scene.dbgOutput(1, strDebugLocation, "[fTotalWidth]: [" & fTotalWidth & "]")
+	Scene.dbgOutput(1, strDebugLocation, "[sGraphicDetails.fXOffset]: [" & sGraphicDetails.fXOffset & "]")
 	
 	calcGapsAndOffset_UMVerticalX = sGraphicDetails
 	
@@ -569,18 +512,16 @@ End Function
 '
 Sub createGeometry_UMHorizontalX()
 	Dim strDebugLocation As String = strScriptName & "createGeometry_UMHorizontalX()):"
-	Dim contGeomBase, contGroup, contElement As Container
+	Dim contGeomBase, contGroup, contElement, contGroupGfxEle As Container
 	Dim aContElement As Array [Container]
 	Dim iGroup, iElem As Integer
 	Dim aString As Array[String]
 	Dim tmpString, strPostfix, strBarReferenceName As String
 	Dim strEleBaseName, strEleGroupName As String
-	Dim fGroupPosY, fElemPosY, fOffsetY As Double
+	Dim fBGHeight, fGroupPosY, fElemPosY, fOffsetY, fHelp As Double
 	Dim vBoundingBox As Vertex
 	
 	Scene.dbgOutput(1, strDebugLocation, "create .START.")
-	' build name of reference bar
-'		strBarReferenceName = "GEOM*ZDFWahlen_v3/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/g" & sGeometryDetails.strBarBaseName & "_" & strPostfix
 
 	' create base container and assign name
 	contGeomBase = contEleDestination.AddContainer(TL_DOWN)
@@ -588,35 +529,47 @@ Sub createGeometry_UMHorizontalX()
 	contGeomBase.CreateGeometry( sGraphicDetails.strGRefBaseName )
 	System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
 	sGraphicDetails.strNumBars.Split("#", aString)
-println "..... [strGraphicName]: ["	& sGraphicDetails.strGraphicName & "]"
-println "..... [strGRefBaseName]: ["	& sGraphicDetails.strGRefBaseName & "]"
+	Scene.dbgOutput(1, strDebugLocation, "[strGraphicName] [strGRefBaseName]: [" & sGraphicDetails.strGraphicName & "] [" & sGraphicDetails.strGRefBaseName & "]")
+
 	' create groups and elements
 	fGroupPosY = sGraphicDetails.fXOffset
-println "..... [sGraphicDetails.fXOffset]: ["	& sGraphicDetails.fXOffset & "]"
+
 	For iGroup = 1 To aString.UBound + 1
+	
 		Scene.dbgOutput(1, strDebugLocation, "processing [iGroup] [nElem]: [" & iGroup & "] [" & aString[iGroup-1] & "]")
 		contGroup = contGeomBase.FindSubContainer("$TRANS").AddContainer(TL_DOWN)
 		contGroup.Name = strGroupBaseName & iGroup
 		
-'		If CInt( aString[iGroup-1] ) <= 4 Then
-'			contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName & "_" & aString[iGroup-1] & "b" ) 
-'		Else
-'			contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName & "_4b" ) 
-'		End If
-		
+		contGroup.CreateGeometry( sGraphicDetails.strGRefGroupName ) 
 		System.SendCommand( "#" & contGroup.vizID & "*GEOM SPLIT" )
-println "..... [strGRefGroupName]: ["	& sGraphicDetails.strGRefGroupName & "]"
-		' set position and set banner width
+
+		' Calculate banner and background width
+		contGroupGfxEle = contGroup.FindSubContainer("$GFX_ELE")
+		fBGHeight = (CInt(aString[iGroup-1])-1)*sGraphicDetails.fElemGap + CInt(aString[iGroup-1])*sGraphicDetails.fElemWidth
+Scene.dbgOutput(1, strDebugLocation, "[fBGHeight]: [" & fBGHeight & "] ...............in pixel........")
+		fBGHeight = fBGHeight * kVizToPixelRatio
+Scene.dbgOutput(1, strDebugLocation, "[kVizToPixelRatio]: [" & kVizToPixelRatio & "] ...............kVizToPixelRatio........")
+Scene.dbgOutput(1, strDebugLocation, "[fBGHeight]: [" & fBGHeight & "] ...............in viz units........")
+		contGroupGfxEle.FindSubContainer("$objGroupBG").Geometry.PluginInstance.SetParameterDouble("width", fBGHeight)
+
+		' calculate and set vertical position.Y
 		If iGroup = 1 Then
+
 			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosY & "]")
 			contGroup.Position.Y = fGroupPosY
+
 		ElseIf iGroup > 1 Then
-			fGroupPosY = fGroupPosY + sGraphicDetails.fGroupGap + CDbl(aString[iGroup-2])*(sGraphicDetails.fElemWidth+sGraphicDetails.fElemGap) - sGraphicDetails.fElemGap
-			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosX]: [" & fGroupPosY & "]")
+
+			fHelp = (CInt(aString[iGroup-2])-1)*sGraphicDetails.fElemGap + CInt(aString[iGroup-2])*sGraphicDetails.fElemWidth
+			fGroupPosY = fGroupPosY + (fHelp + sGraphicDetails.fGroupGap) * kVizToPixelRatio
+			Scene.dbgOutput(1, strDebugLocation, "[fGroupPosY]: [" & fGroupPosY & "]")
 			contGroup.Position.Y = (-1)*fGroupPosY
+
 		End If
+		
 		' create elements in group
 		For iElem = 1 To CInt(aString[iGroup-1])
+
 			Scene.dbgOutput(1, strDebugLocation, "processing [iElem]: [" & iElem & "]")
 			contElement = contGroup.FindSubContainer("$TRANS").AddContainer(TL_DOWN)
 			contElement.Name = strGroupBaseName & iGroup & strElemBaseName & iElem
@@ -625,106 +578,22 @@ println "..... [strGRefGroupName]: ["	& sGraphicDetails.strGRefGroupName & "]"
 			contElement.CreateGeometry( sGraphicDetails.strGRefBarName ) 
 '			System.SendCommand( "#" & contGeomBase.vizID & "*GEOM SPLIT" )
 println "..... [strGRefBarName]: ["	& sGraphicDetails.strGRefBarName & "]"
+
 			' set position
 			If iElem > 1 Then
-				fElemPosY = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth )
-				Scene.dbgOutput(1, strDebugLocation, "[fOffsetX]: [" & fElemPosY & "]")
+			
+				fElemPosY = ( iElem-1 )*( sGraphicDetails.fElemGap + sGraphicDetails.fElemWidth ) * kVizToPixelRatio
+				Scene.dbgOutput(1, strDebugLocation, "[fOffsetY]: [" & fElemPosY & "]")
 				contElement.Position.Y = (-1)*fElemPosY
+				
 			End If
+
 		Next
 
 	Next
 	Scene.dbgOutput(1, strDebugLocation, "create .DONE.")
 	
 End Sub
-'-------------------------------------------------------------------------------
-'
-Function calcGapsAndOffset_UMHorizontalX( sGraphicDetails As structGraphicDetails ) As structGraphicDetails
-	Dim strDebugLocation As String = strScriptName & "calcGapsAndOffset_UMHorizontalX():"
-	Dim strErrorTitle, strErrorMessage As String
-	Dim strPostfix, tmpString As String
-	Dim aNumBars As Array[String]
-	Dim iGroup, numGroups, numBars, numBarsInGroup As Integer
-	Dim fTotalWidth As Double
-
-	Scene.dbgOutput(1, strDebugLocation, "[sGraphicDetails.strNumBars]: [" & sGraphicDetails.strNumBars & "]")
-	
-	strPostfix = ""
-	tmpString = sGraphicDetails.strNumBars
-	tmpString.Split("#", aNumBars)
-	
-	If aNumBars.UBound <= knHMaxGroups Then
-
-		numBars = 0
-		numGroups = aNumBars.UBound
-		For iGroup = 0 To numGroups
-			numBars = numBars + CInt(aNumBars[iGroup])
-		Next
-		Scene.dbgOutput(1, strDebugLocation, "[aNumBars.UBound] [numBars]: [" & aNumBars.UBound & "] [" & numBars & "]")
-	
-		If numBars <= knHMaxTotalBars Then
-		
-'Dim kHBarWidth     As Double = 16.0
-'Dim kHBarGap       As Double =  4.0
-'Dim kHGroupGap     As Double =  4.0
-			If numBars >= 2 And numBars <= knHMaxTotalBars Then
-				strPostfix = "2_12b"
-				sGraphicDetails.fElemWidth = kHBarWidth
-				sGraphicDetails.fGroupGap  = kHGroupGap
-				sGraphicDetails.fElemGap   = kHBarGap
-			Else
-				strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
-				strErrorMessage = "wrong number of total bars: [" & numBars & "]\n"
-				strErrorMessage = strErrorMessage & "number of total bars allowed: [2...12]"
-				Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
-			End If
-			
-			If strPostfix <> "" Then
-'				sGraphicDetails.strGRefBarName   = "GEOM*ZDFWahlen_v3/9_SHARED/geom/_ELEMENTS_/_UMFRAGE_/gUMHX_" & strPostfix
-				sGraphicDetails.strGRefBarName = sGraphicDetails.strGRefBarName & strPostfix
-				
-				
-'				fTotalWidth = sGraphicDetails.fElemWidth * (numBars + (numGroups - 1)*sGraphicDetails.fGroupGap + (numBars - numGroups)*sGraphicDetails.fElemGap )
-println strDebugLocation & "[numGroups]: [" & numGroups & "]........................................."
-println strDebugLocation & "[numBars]: [" & numBars & "]........................................."
-println strDebugLocation & "[fElemWidth]: [" & sGraphicDetails.fElemWidth & "]........................................."
-println strDebugLocation & "[fGroupGap]: [" & sGraphicDetails.fGroupGap & "]........................................."
-println strDebugLocation & "[fElemGap]: [" & sGraphicDetails.fElemGap & "]........................................."
-				
-				fTotalWidth = sGraphicDetails.fElemWidth * numBars
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars..........................."
-				fTotalWidth = fTotalWidth + (numGroups - 1) * sGraphicDetails.fGroupGap
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "].....bars+groups...................."
-				fTotalWidth = fTotalWidth + (numBars - numGroups - 1) * sGraphicDetails.fElemGap
-				
-
-				Scene.dbgOutput(1, strDebugLocation, "[fTotalWidth]: [" & fTotalWidth & "]")
-println strDebugLocation & "[fTotalWidth]: [" & fTotalWidth & "]........................................."
-				
-				sGraphicDetails.fXOffset = 0.0
-println strDebugLocation & "[fXOffset]: [" & sGraphicDetails.fXOffset & "]........................................."
-
-				sGraphicDetails.blnValidated = TRUE
-			Else
-				sGraphicDetails.blnValidated = FALSE
-			End If
-		Else
-			strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
-			strErrorMessage = "current number of total bars: [" & numBars & "]\n"
-			strErrorMessage = strErrorMessage & "max number of total bars allowed: [" & knHMaxTotalBars & "]"
-			Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
-		End If
-		
-	Else
-		strErrorTitle   = "ERROR: [" & strDebugLocation & "]"
-		strErrorMessage = "current number of groups: [" & aNumBars.UBound & "]\n"
-		strErrorMessage = strErrorMessage & "max number of groups allowed: [" & knHMaxGroups & "]"
-		Scene.dbgPrintOnScreenError( strErrorTitle, strErrorMessage )
-	End If
-	
-	calcGapsAndOffset_UMHorizontalX = sGraphicDetails
-	
-End Function
 '-------------------------------------------------------------------------------
 '
 Sub updateScene_PosX( fGroupGap As Double, fElemGap As Double, fElemWidth As Double )
@@ -793,6 +662,3 @@ End Sub
 '
 '
 '-------------------------------------------------------------------------------
-
-
-

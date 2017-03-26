@@ -19,6 +19,26 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.26:
+scene - Geometry:
+- create gUMHP_Base
+- create gUMHP_Group
+- create gUMUP_57h
+- modify gUMVP_Base
+- modify gUMVD_Base
+
+moGenerateUM_v2017:
+- cleanup and remove checking for maxGroups and maxBars
+- adapt functions for horizontal bar variants
+  . readGeometryDetails()
+  . createGeometry()
+- major cleanup of unused functions and variables
+
+moPlayoutUMHX_v2017:
+- bug fixing
+- dynamic transform between two bar variants depending on group label content
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.24/25:
 moGenerateUM_v2017:
 - add dimensions for horizontal bar variants
