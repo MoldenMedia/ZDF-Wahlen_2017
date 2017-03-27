@@ -19,6 +19,19 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.27:
+moPlayout-Scripts:
+- add thePercentInfoFlag set visibility of txt_unit (percent sign)
+   . moPlayoutANNQRX_v2017 (ANNQRP, ANNQRPD, ANNQRD)
+   . moPlayoutANSVZX_v2017 (ANSVZP, ANSVZPD)
+   . moPlayoutHRPX_v2017
+   . moPlayoutUMVX_v2017
+   . moPlayoutHROW_v2017
+
+moGenerateUM_v2017:
+- set position.x of info percent label
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.26:
 scene - Geometry:
 - create gUMHP_Base

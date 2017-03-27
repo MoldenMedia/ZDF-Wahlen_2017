@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "15.03.2017"
+Dim theDateModified     As String = "27.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -48,6 +48,7 @@ Dim kTextLabel1SubPath       As String = "$TXT_LABEL_1"
 Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
+Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 
 Dim kEleRefText              As String = "$ELE_REF_TEXT"
 Dim kEleRefPlane             As String = "$ELE_REF_PLANE"
@@ -80,11 +81,12 @@ Structure structGroupData
 End Structure
 '-------------------------------------------------------------------------------
 Structure structGraphicsData
-	strElemName      As String
-	strTypeOfGraphic As String
-	nGroups          As Integer
-	dblRefValue      As Double
-	aGroup           As Array[structGroupData]
+	strElemName        As String
+	strTypeOfGraphic   As String
+	blnInfoPercentFlag As Boolean
+	nGroups            As Integer
+	dblRefValue        As Double
+	aGroup             As Array[structGroupData]
 End Structure
 '-------------------------------------------------------------------------------
 Dim sGroupData    As structGroupData
@@ -129,6 +131,7 @@ Sub OnInitParameters()
 	RegisterParameterString("theAnimOrderFlag", "animation order flags [1|2#...]:", "1#2#3#4#5", 55, 55, "")
 	RegisterParameterString("theMaterial", "material [material1|material2]:", "cdu#cdu#cdu#cdu#cdu", 55, 256, "")
 	RegisterParameterString("theRangeValues", "min/max values [0|45#0|65...]:", "0|0#0|0", 25, 55, "")
+	RegisterParameterBool("thePercentInfoFlag", "Show Info Percent", TRUE)
 	
 	RegisterPushButton("btAssignValues", "assign values", 11)
 	RegisterInfoText(strInfoText)
@@ -175,6 +178,8 @@ Sub readGraphicsData()
 	
 	' get type of graphics
 	sGraphicsData.strTypeOfGraphic = GetParameterString("theTypeOfGraphic")
+	' get info percent label flag
+	sGraphicsData.blnInfoPercentFlag = GetParameterBool("thePercentInfoFlag")
 	' get group data
 	strTemp = GetParameterString("theNumElements")
 	strTemp.Split( strGroupSeparator, aGroupEleList )
@@ -399,6 +404,9 @@ Sub updateScene_assignData()
 'println "DEBUG: [scaleFactor = (fMaxVizValue-fMinVizValue-2*labelHeigth)/(fMaxRange-fMinRange)]: ["	& dblScaleFactor & "=(" & fMaxVizValue & "-" & fMinVizValue & "-2*" & sGlobalParameter.dblUMLabHeight & ")/(" & fMaxRange & "-" & fMinRange & ") = " & dblScaleFactor
 'println "DEBUG: [zeroPosY]: ["	& dblZeroPosY & "]" 
 
+	' set visibility of info percent label
+	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
+
 	For iGroup = 0 To sGraphicsData.nGroups
 		Scene.dbgOutput(1, strDebugLocation, "updating [iGroup]: [" & iGroup & "] ----------------------------------------------------")
 
@@ -432,6 +440,8 @@ Sub updateScene_assignData()
 '				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
 				' !! no bar labels required in ANSVZX !!
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], "", "", "", dblValue )
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			ElseIf sGraphicsData.strTypeOfGraphic = "ANSVZD" Then
 
@@ -450,6 +460,8 @@ Sub updateScene_assignData()
 '				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
 				' !! no bar labels required in ANSVZX !!
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], "", "", "", dblValue )
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			ElseIf sGraphicsData.strTypeOfGraphic = "ANSVZPD" Then
 
@@ -467,6 +479,8 @@ Sub updateScene_assignData()
 				Scene._updateScene_assignDiffLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], "", "", "" )
 '				Scene._updateScene_assignDiffLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement] )
 '				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.aGroup[iGroup].aValueTxt[iElement], "", "", "", dblValue )
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			End If
 			

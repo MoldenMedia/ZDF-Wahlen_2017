@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "23.03.2017"
+Dim theDateModified     As String = "27.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -441,6 +441,8 @@ Sub updateScene_assignData()
 				updateScene_LabelOffsetElement(sGraphicsData.strTypeOfGraphic, contElement, nVisibleLabel)
 				' set text value and labels
 				Scene._updateScene_assignLabel_3_2017( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue, nVisibleLabel )
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			ElseIf sGraphicsData.strTypeOfGraphic = "HRPD" Then
 
@@ -471,6 +473,8 @@ Sub updateScene_assignData()
 
 				' set text value and labels
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			ElseIf sGraphicsData.strTypeOfGraphic = "HRPG" Then
 
@@ -483,6 +487,8 @@ Sub updateScene_assignData()
 				updateScene_LabelOffsetElement(sGraphicsData.strTypeOfGraphic, contElement, nVisibleLabel)
 				' set text value and labels
 				Scene._updateScene_assignLabel_3_2017( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue, nVisibleLabel )
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 				' set tendency arrow visibility
 				dblValue = CDbl( sGraphicsData.aGroup[iGroup].aDiffNum[iElement] )
@@ -518,6 +524,8 @@ Sub updateScene_assignData()
 				' set text value and labels
 				Scene._updateScene_assignLabel_3_2017( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue, nVisibleLabel )
 				contElement.FindSubContainer( kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath & kDiffSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aDiffTxt[iElement]
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			End If
 
@@ -585,6 +593,7 @@ Sub updateScene_LabelOffsetElement(typeOfGraphic As String, contElement As Conta
 	contElement.FindSubContainer( kBarBGSubPath ).FindKeyframeOfObject("k_value").FloatValue = bgMaxHeight - (nLabels-1)*kBannerStep
 End Sub
 '-------------------------------------------------------------------------------
+
 
 
 

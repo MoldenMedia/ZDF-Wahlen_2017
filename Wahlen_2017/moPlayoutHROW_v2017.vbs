@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "23.03.2017"
+Dim theDateModified     As String = "27.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -390,46 +390,27 @@ Sub updateScene_assignData()
 
 			' set text value and labels
 			If sGraphicsData.strTypeOfGraphic = "HROWPD" Or sGraphicsData.strTypeOfGraphic = "HROWD" Then
+				' set label visibility
 				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath).Active = TRUE
 				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath).Active = TRUE
-				
-				' Stefan 09.08.2011 
-				'Switch ON/OFF Unit(%) when theValueText = ""
-				strHelpValueTxt = CStr(sGraphicsData.aGroup[iGroup].aValueTxt[iElement])
-				strHelpValueTxt.Trim()
-				
-				If strHelpValueTxt = "" Then
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kUnitSubPath).Active = False
-				Else
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
-'					contElement.FindSubContainer(kDataSubPath & kTextDiffSubPath).Active = TRUE
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kUnitSubPath).Active = True
-				End If
+				' set text values
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
 				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath & kTextDiffSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aDiffTxt[iElement]
-'println "DEBUG: [kDataSubPath & kTextDiffSubPath & kValueSubPath]: [" & kDataSubPath & kTextDiffSubPath & kValueSubPath & "]"
-'println "DEBUG: [sGraphicsData.aGroup[" & iGroup & "].aDiffTxt[" & iElement & "]]: [" & sGraphicsData.aGroup[iGroup].aDiffTxt[iElement] & "]"
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kUnitSubPath).Active = Not sGraphicsData.blnInfoPercentFlag
 
 			Else
-				' Stefan 09.08.2011 
-				'Switch ON/OFF Unit(%) when theValueText = ""
-				strHelpValueTxt = CStr(sGraphicsData.aGroup[iGroup].aValueTxt[iElement])
-				strHelpValueTxt.Trim()
-				
-				If strHelpValueTxt = "" Then
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kUnitSubPath).Active = False
-				Else 
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
-'					contElement.FindSubContainer(kDataSubPath & kTextDiffSubPath).Active = FALSE
-					contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kUnitSubPath).Active = True
-				End If
 
+				' set label visibility
 				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath).Active = TRUE
 				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath).Active = FALSE
+				' set text values
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kValueSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aValueTxt[iElement]
+				' set visibility of unit percent
+				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & kUnitSubPath).Active = Not sGraphicsData.blnInfoPercentFlag
+
 			End If
 			contElement.FindSubContainer(kDataSubPath & kTextLabel1SubPath & kLabelSubPath).Geometry.Text = sGraphicsData.aGroup[iGroup].aLabel1[iElement]
-
 
 			' set element material
 			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
@@ -451,6 +432,7 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
+
 
 
 
