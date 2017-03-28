@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "27.03.2017"
+Dim theDateModified     As String = "28.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -264,8 +264,8 @@ Sub readGraphicsData()
 		If sGroupData.dblMinValue = 0.0 And sGroupData.dblMaxValue = 0.0 Then
 
 			If sGraphicsData.strTypeOfGraphic = "ANNQRD" Then
-				dblTempMinValue = Scene._getMinBaxValue( sGroupData.aDiffNum )
-				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aDiffNum )
+				dblTempMinValue = 0.0
+				dblTempMaxValue = Scene._getAbsMaxBaxValue( sGroupData.aDiffNum )
 			Else
 				dblTempMinValue = 0.0
 				dblTempMaxValue = Scene._getMaxBaxValue( sGroupData.aValueNum )
@@ -298,12 +298,13 @@ Sub readGraphicsData()
 	Next
 
 	' get maxVizValue [ANNQRP, ANNQRPD, ANNQRD]
-	If sGraphicsData.strTypeOfGraphic = "ANNQRD" Then
-		fMinVizValue = 0.0
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueANVD
-	Else
-		fMinVizValue = 0.0
-		fMaxVizValue = sGlobalParameter.dblMaxVizValueANVP - (nMaxlabel-1)*sGlobalParameter.dblANLabHeight
+	fMinVizValue = 0.0
+	If sGraphicsData.strTypeOfGraphic = "ANNQRP" Then
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueANVP - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
+	ElseIf sGraphicsData.strTypeOfGraphic = "ANNQRD" Then
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueANVD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
+	ElseIf sGraphicsData.strTypeOfGraphic = "ANNQRPD" Then
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueANVPD - (nMaxLabel-1)*sGlobalParameter.dblMaxVizValueHRLabHeight
 	End If
 
 	nVisibleLabel = nMaxLabel
@@ -446,9 +447,21 @@ Sub updateScene_assignData()
 
 'println "DEBUG: [iGroup] [iElement] [dblValue]: ["	& iGroup & "] [" & iElement & "] [" & dblValue & "]" 
 				' set posY of element
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
+'				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).Position.Y = dblZeroPosY
 
-				contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
+				' set animation keyframe and visibility
+				If dblValue > 0 Then
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = TRUE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
+				ElseIf dblValue < 0 Then         
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = TRUE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).FindKeyframeOfObject("k_value").FloatValue = Abs(dblValue)
+				Else     
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_pos" ).Active = FALSE
+					contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath & "_neg" ).Active = FALSE
+				End If
 
 				' set text value and labels
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aDiffTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
@@ -476,10 +489,16 @@ Sub updateScene_assignData()
 		End If
 
 			' set element material
-			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
-			tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
-			contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
-'			contElement.FindSubContainer("$DATA$obj_geom").FindKeyframeOfObject("k_value").FloatValue = dblValue
+			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath  & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
+			If sGraphicsData.strTypeOfGraphic = "ANNQRD" Then
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_pos").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom_pos").Material = tmpMaterial
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_neg").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom_neg").Material = tmpMaterial
+			Else
+				tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] )
+				contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
+			End If
 			
 			' add animation index to playout control
 			Scene._PlayoutAnimationAdd( contElement, sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] )

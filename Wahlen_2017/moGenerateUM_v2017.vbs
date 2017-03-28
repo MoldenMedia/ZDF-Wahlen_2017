@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "27.03.2017"
+Dim theDateModified     As String = "28.03.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"

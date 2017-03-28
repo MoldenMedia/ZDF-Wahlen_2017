@@ -19,6 +19,19 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.03.28:
+moPlayoutANNQRX_v2017:
+- fix color and visibility for ANNQRD 
+
+SceneScript_v2017:
+- height for UMHX
+
+Bug fixes and minor changes:
+. moPlayoutANNQRX_v2017
+. moPlayoutANSVZX_v2017
+. moPlayoutUMHX_v2017
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.27:
 moPlayout-Scripts:
 - add thePercentInfoFlag set visibility of txt_unit (percent sign)

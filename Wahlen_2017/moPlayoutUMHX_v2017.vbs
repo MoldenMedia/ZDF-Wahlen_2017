@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "26.03.2017"
+Dim theDateModified     As String = "28.03.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -312,19 +312,19 @@ Sub updateScene_assignData()
 		strHelp.Trim()
 		If strHelp = "" Then
 
-			fObjGeomPosX      = 35.0
-			fobjGeomMax       = 275.0
-			fTxtDataPosX      = 0.0
-			fTxtLabelPosX     = -137.5
-			fObjLabelBGHeight = 275
+			fObjGeomPosX      = 23.0
+			fobjGeomMax       = 285.7
+			fTxtDataPosX      = -25.0
+			fTxtLabelPosX     = -140.5
+			fObjLabelBGHeight = 248.85
 
 		Else
 
-			fObjGeomPosX      = 121.0
-			fobjGeomMax       = fMaxVizValue  ' 150.0
-			fTxtDataPosX      = 85.0
-			fTxtLabelPosX     = -109.0
-			fObjLabelBGHeight = 218.0
+			fObjGeomPosX      = 118.5
+			fobjGeomMax       = fMaxVizValue  ' 150.0 190.4
+			fTxtDataPosX      = 70.5
+			fTxtLabelPosX     = -103.0
+			fObjLabelBGHeight = 205.0
 
 		End If
 		
@@ -363,10 +363,8 @@ Sub updateScene_assignData()
 				Scene._updateScene_assignLabel_3( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.strTypeOfGraphic, sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
 			End If
 			
-			' check for empty labels
-			If sGraphicsData.aGroup[iGroup].aValueTxt[iElement] = "" Then
-				contElement.FindSubContainer(kDataSubPath & kTextValueSubPath & kUnitSubPath).Active = FALSE
-			End If
+			' set visibility of unit percent
+			contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 
 			' set element material
 			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath  & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")
