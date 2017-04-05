@@ -19,6 +19,25 @@ TODO:
 --> maxSize for UMVD needs to be fixed
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.04.01/04/05:
+SceneScript_v2017:
+- add dblMaxVizValueHROWP, dblMaxVizValueHROWPD
+- set dblMaxVizValueUMKB to 190
+- move definition of default values into script code
+
+moGenerateUM_v2017:
+- UMKB bars are using horizontal bars in the layout 2017
+
+moPlayoutUMHX_v2017:
+- add support for difference value labels 
+
+moPlayoutHROW_v2017:
+- add support for difference value labels 
+
+moPlayoutUMKB_v2017:
+- started support for layout 2017
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.03.28:
 moPlayoutANNQRX_v2017:
 - fix color and visibility for ANNQRD 

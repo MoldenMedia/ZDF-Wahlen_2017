@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "28.03.2017"
+Dim theDateModified     As String = "05.04.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -29,7 +29,8 @@ Structure structGlobalParameter
 	dblMaxVizValueHRPD        As Double
 	dblMaxVizValueHRPG        As Double
 	dblMaxVizValueHRSV        As Double
-	dblMaxVizValueHROW        As Double
+	dblMaxVizValueHROWP       As Double
+    dblMaxVizValueHROWPD      As Double
 	dblMaxVizValueHRSVB       As Double
 	dblMaxVizValueUMVB        As Double
 	dblMaxVizValueUMVP        As Double
@@ -114,33 +115,34 @@ Sub OnInitParameters()
 	RegisterParameterString("theGGeomGeneratePath", "geometry generate folder:", "GEOM*ZDFWahlen_2017/9_SHARED/geom/", 55, 128, "")
 	RegisterParameterString("theGImagePath", "image folder:", "IMAGE*ZDFWahlen_2017/9_SHARED/image/", 55, 128, "")
 	RegisterParameterString("theGMaterialPath", "material folder:", "MATERIAL*ZDFWahlen_2017/9_SHARED/material/", 55, 128, "")
-	RegisterParameterDouble("theHRLabHeight", "label height HR", 3.8, 2.0, 100.0)
-	RegisterParameterDouble("theUMLabHeight", "label height UM", 4.6, 2.0, 100.0)
-	RegisterParameterDouble("theANLabHeight", "label height AN", 3.8, 2.0, 100.0)
-	RegisterParameterDouble("theMaxVizValueHRWB", "max Viz value HRWB", 37.3, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRPZ", "max Viz value HRPZ", 167.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 138.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRPD", "max Viz value HRPD", 81.0, 5.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRPG", "max Viz value HRPG", 138.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRSV", "max Viz value HRSV", 180.0, 0.0, 360.0)
-	RegisterParameterDouble("theMaxVizValueHROW", "max Viz value HROW", 100.0, 50.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueHRSVB", "max Viz value HRSVB", 315.0, 50.0, 350.0)
-	RegisterParameterDouble("theMaxVizValueUMVB", "max Viz value UMVB", 60.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMVP", "max Viz value UMVP", 167.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMVD", "max Viz value UMVD", 81.0, 5.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMHP", "max Viz value UMHP", 190.4, 50.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMHPD", "max Viz value UMHPD", 120.0, 50.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMAS", "max Viz value UMAS", 53.5, 5.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueUMKB", "max Viz value UMKB", 47.0, 10.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueUMKV", "max Viz value UMKV", 125.0, 0.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 167.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueANVPD", "max Viz value ANVPD", 138.0, 10.0, 200.0)
-	RegisterParameterDouble("theMaxVizValueANVD", "max Viz value ANVD", 50.0, 5.0, 200.0)
-	RegisterParameterDouble("theMaxVizValuePBPJ", "max Viz value PBPJ", 180.0, 0.0, 360.0)
-	RegisterParameterDouble("theMinVizValuePBRK", "min Viz value PBRK", 0.138, 0.1, 1.0)
-	RegisterParameterDouble("theMaxVizValuePBRK", "max Viz value PBRK", 0.768, 0.1, 1.0)
-	RegisterParameterDouble("theMaxVizValueGraphHeight", "max Viz graph height", 105.0, 50.0, 150.0)
-	RegisterParameterDouble("theMaxVizValueGraphWidth", "max Viz graph width", 223.0, 100.0, 300.0)
+'	RegisterParameterDouble("theHRLabHeight", "label height HR", 3.8, 2.0, 100.0)
+'	RegisterParameterDouble("theUMLabHeight", "label height UM", 4.6, 2.0, 100.0)
+'	RegisterParameterDouble("theANLabHeight", "label height AN", 3.8, 2.0, 100.0)
+'	RegisterParameterDouble("theMaxVizValueHRWB", "max Viz value HRWB", 37.3, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHRPZ", "max Viz value HRPZ", 167.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHRPZD", "max Viz value HRPZD", 138.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHRPD", "max Viz value HRPD", 81.0, 5.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHRPG", "max Viz value HRPG", 138.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHRSV", "max Viz value HRSV", 180.0, 0.0, 360.0)
+'	RegisterParameterDouble("theMaxVizValueHROWP", "max Viz value HROWP", 100.0, 50.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHROWPD", "max Viz value HROWPD", 100.0, 50.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueHRSVB", "max Viz value HRSVB", 315.0, 50.0, 350.0)
+'	RegisterParameterDouble("theMaxVizValueUMVB", "max Viz value UMVB", 60.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMVP", "max Viz value UMVP", 167.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMVD", "max Viz value UMVD", 81.0, 5.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMHP", "max Viz value UMHP", 190.4, 50.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMHPD", "max Viz value UMHPD", 120.0, 50.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMAS", "max Viz value UMAS", 53.5, 5.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMKB", "max Viz value UMKB", 190.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueUMKV", "max Viz value UMKV", 125.0, 0.0, 150.0)
+'	RegisterParameterDouble("theMaxVizValueANVP", "max Viz value ANVP", 167.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueANVPD", "max Viz value ANVPD", 138.0, 10.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValueANVD", "max Viz value ANVD", 50.0, 5.0, 200.0)
+'	RegisterParameterDouble("theMaxVizValuePBPJ", "max Viz value PBPJ", 180.0, 0.0, 360.0)
+'	RegisterParameterDouble("theMinVizValuePBRK", "min Viz value PBRK", 0.138, 0.1, 1.0)
+'	RegisterParameterDouble("theMaxVizValuePBRK", "max Viz value PBRK", 0.768, 0.1, 1.0)
+'	RegisterParameterDouble("theMaxVizValueGraphHeight", "max Viz graph height", 105.0, 50.0, 150.0)
+'	RegisterParameterDouble("theMaxVizValueGraphWidth", "max Viz graph width", 223.0, 100.0, 300.0)
 	
 End Sub
 '-------------------------------------------------------------------------------
@@ -163,34 +165,65 @@ Sub readGlobalParameter()
 	sGlobalParameter.strGlobGeomGeneratePath   = GetParameterString("theGGeomGeneratePath")
 	sGlobalParameter.strGlobImagePath          = GetParameterString("theGImagePath")
 	sGlobalParameter.strGlobMaterialPath       = GetParameterString("theGMaterialPath")
-	sGlobalParameter.dblMaxVizValueHRWB        = GetParameterDouble("theMaxVizValueHRWB")
-	sGlobalParameter.dblMaxVizValueHRPZ        = GetParameterDouble("theMaxVizValueHRPZ")
-	sGlobalParameter.dblMaxVizValueHRPZD       = GetParameterDouble("theMaxVizValueHRPZD")
-	sGlobalParameter.dblMaxVizValueHRPD        = GetParameterDouble("theMaxVizValueHRPD")
-	sGlobalParameter.dblMaxVizValueHRPG        = GetParameterDouble("theMaxVizValueHRPG")
-	sGlobalParameter.dblMaxVizValueHRSV        = GetParameterDouble("theMaxVizValueHRSV")
-	sGlobalParameter.dblMaxVizValueHROW        = GetParameterDouble("theMaxVizValueHROW")
-	sGlobalParameter.dblMaxVizValueHRSVB       = GetParameterDouble("theMaxVizValueHRSVB")
-	sGlobalParameter.dblMaxVizValueUMVB        = GetParameterDouble("theMaxVizValueUMVB")
-	sGlobalParameter.dblMaxVizValueUMVP        = GetParameterDouble("theMaxVizValueUMVP")
-	sGlobalParameter.dblMaxVizValueUMVD        = GetParameterDouble("theMaxVizValueUMVD")
-	sGlobalParameter.dblMaxVizValueUMHP        = GetParameterDouble("theMaxVizValueUMHP")
-	sGlobalParameter.dblMaxVizValueUMHPD       = GetParameterDouble("theMaxVizValueUMHPD")
-	sGlobalParameter.dblMaxVizValueUMAS        = GetParameterDouble("theMaxVizValueUMAS")
-	sGlobalParameter.dblMaxVizValueUMKB        = GetParameterDouble("theMaxVizValueUMKB")
-	sGlobalParameter.dblMaxVizValueUMKV        = GetParameterDouble("theMaxVizValueUMKV")
-	sGlobalParameter.dblMaxVizValueANVP        = GetParameterDouble("theMaxVizValueANVP")
-	sGlobalParameter.dblMaxVizValueANVPD       = GetParameterDouble("theMaxVizValueANVPD")
-	sGlobalParameter.dblMaxVizValueANVD        = GetParameterDouble("theMaxVizValueANVD")
-	sGlobalParameter.dblMaxVizValueHRLabHeight = GetParameterDouble("theHRLabHeight")
-	sGlobalParameter.dblHRLabHeight            = GetParameterDouble("theHRLabHeight")
-	sGlobalParameter.dblUMLabHeight            = GetParameterDouble("theUMLabHeight")
-	sGlobalParameter.dblANLabHeight            = GetParameterDouble("theANLabHeight")
-	sGlobalParameter.dblMaxVizValuePBPJ        = GetParameterDouble("theMaxVizValuePBPJ")
-	sGlobalParameter.dblMinVizValuePBRK        = GetParameterDouble("theMinVizValuePBRK")
-	sGlobalParameter.dblMaxVizValuePBRK        = GetParameterDouble("theMaxVizValuePBRK")
-	sGlobalParameter.dblMaxVizValueGraphWidth  = GetParameterDouble("theMaxVizValueGraphWidth")
-	sGlobalParameter.dblMaxVizValueGraphHeight = GetParameterDouble("theMaxVizValueGraphHeight")
+'	sGlobalParameter.dblMaxVizValueHRWB        = GetParameterDouble("theMaxVizValueHRWB")
+'	sGlobalParameter.dblMaxVizValueHRPZ        = GetParameterDouble("theMaxVizValueHRPZ")
+'	sGlobalParameter.dblMaxVizValueHRPZD       = GetParameterDouble("theMaxVizValueHRPZD")
+'	sGlobalParameter.dblMaxVizValueHRPD        = GetParameterDouble("theMaxVizValueHRPD")
+'	sGlobalParameter.dblMaxVizValueHRPG        = GetParameterDouble("theMaxVizValueHRPG")
+'	sGlobalParameter.dblMaxVizValueHRSV        = GetParameterDouble("theMaxVizValueHRSV")
+'	sGlobalParameter.dblMaxVizValueHROWP       = GetParameterDouble("theMaxVizValueHROWP")
+'	sGlobalParameter.dblMaxVizValueHROWPD      = GetParameterDouble("theMaxVizValueHROWPD")
+'	sGlobalParameter.dblMaxVizValueHRSVB       = GetParameterDouble("theMaxVizValueHRSVB")
+'	sGlobalParameter.dblMaxVizValueUMVB        = GetParameterDouble("theMaxVizValueUMVB")
+'	sGlobalParameter.dblMaxVizValueUMVP        = GetParameterDouble("theMaxVizValueUMVP")
+'	sGlobalParameter.dblMaxVizValueUMVD        = GetParameterDouble("theMaxVizValueUMVD")
+'	sGlobalParameter.dblMaxVizValueUMHP        = GetParameterDouble("theMaxVizValueUMHP")
+'	sGlobalParameter.dblMaxVizValueUMHPD       = GetParameterDouble("theMaxVizValueUMHPD")
+'	sGlobalParameter.dblMaxVizValueUMAS        = GetParameterDouble("theMaxVizValueUMAS")
+'	sGlobalParameter.dblMaxVizValueUMKB        = GetParameterDouble("theMaxVizValueUMKB")
+'	sGlobalParameter.dblMaxVizValueUMKV        = GetParameterDouble("theMaxVizValueUMKV")
+'	sGlobalParameter.dblMaxVizValueANVP        = GetParameterDouble("theMaxVizValueANVP")
+'	sGlobalParameter.dblMaxVizValueANVPD       = GetParameterDouble("theMaxVizValueANVPD")
+'	sGlobalParameter.dblMaxVizValueANVD        = GetParameterDouble("theMaxVizValueANVD")
+'	sGlobalParameter.dblMaxVizValueHRLabHeight = GetParameterDouble("theHRLabHeight")
+'	sGlobalParameter.dblHRLabHeight            = GetParameterDouble("theHRLabHeight")
+'	sGlobalParameter.dblUMLabHeight            = GetParameterDouble("theUMLabHeight")
+'	sGlobalParameter.dblANLabHeight            = GetParameterDouble("theANLabHeight")
+'	sGlobalParameter.dblMaxVizValuePBPJ        = GetParameterDouble("theMaxVizValuePBPJ")
+'	sGlobalParameter.dblMinVizValuePBRK        = GetParameterDouble("theMinVizValuePBRK")
+'	sGlobalParameter.dblMaxVizValuePBRK        = GetParameterDouble("theMaxVizValuePBRK")
+'	sGlobalParameter.dblMaxVizValueGraphWidth  = GetParameterDouble("theMaxVizValueGraphWidth")
+'	sGlobalParameter.dblMaxVizValueGraphHeight = GetParameterDouble("theMaxVizValueGraphHeight")
+
+	sGlobalParameter.dblMaxVizValueHRWB        = 37.3
+	sGlobalParameter.dblMaxVizValueHRPZ        = 167.0
+	sGlobalParameter.dblMaxVizValueHRPZD       = 138.0
+	sGlobalParameter.dblMaxVizValueHRPD        = 81.0
+	sGlobalParameter.dblMaxVizValueHRPG        = 138.0
+	sGlobalParameter.dblMaxVizValueHRSV        = 180.0
+	sGlobalParameter.dblMaxVizValueHROWP       = 100.0
+	sGlobalParameter.dblMaxVizValueHROWPD      = 100.0
+	sGlobalParameter.dblMaxVizValueHRSVB       = 315.0
+	sGlobalParameter.dblMaxVizValueUMVB        = 60.0
+	sGlobalParameter.dblMaxVizValueUMVP        = 167.0
+	sGlobalParameter.dblMaxVizValueUMVD        = 81.0
+	sGlobalParameter.dblMaxVizValueUMHP        = 190.0
+	sGlobalParameter.dblMaxVizValueUMHPD       = 120.0
+	sGlobalParameter.dblMaxVizValueUMAS        = 53.5
+	sGlobalParameter.dblMaxVizValueUMKB        = 190.0
+	sGlobalParameter.dblMaxVizValueUMKV        = 125.0
+	sGlobalParameter.dblMaxVizValueANVP        = 167.0
+	sGlobalParameter.dblMaxVizValueANVPD       = 138.0
+	sGlobalParameter.dblMaxVizValueANVD        = 50.0
+	sGlobalParameter.dblMaxVizValueHRLabHeight = 3.8
+	sGlobalParameter.dblHRLabHeight            = 3.8
+	sGlobalParameter.dblUMLabHeight            = 4.6
+	sGlobalParameter.dblANLabHeight            = 3.8
+	sGlobalParameter.dblMaxVizValuePBPJ        = 180.0
+	sGlobalParameter.dblMinVizValuePBRK        = 0.138
+	sGlobalParameter.dblMaxVizValuePBRK        = 0.768
+	sGlobalParameter.dblMaxVizValueGraphWidth  = 105.0
+	sGlobalParameter.dblMaxVizValueGraphHeight = 223.0
 
 	Scene.Map["sGlobalParameter"] = sGlobalParameter
 End Sub
@@ -1198,3 +1231,6 @@ End Sub
 Function GetHRSVK2_Variant() as Integer
 	GetHRSVK2_Variant = iHRSVK2_Variant
 End Function
+
+
+

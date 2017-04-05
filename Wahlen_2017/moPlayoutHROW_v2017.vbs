@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "27.03.2017"
+Dim theDateModified     As String = "04.04.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -15,7 +15,6 @@ Dim strScriptName    As String = "[" & this.name & "]::"
 Dim strGroupSeparator   As String = "#"
 Dim strElementSeparator As String = "|"
 
-Dim fMinVizValue As Double 
 Dim fMaxVizValue As Double 
 Dim fMinBarValue As Double
 Dim fMaxBarValue As Double
@@ -39,11 +38,7 @@ Dim kTransSubPath            As String = "$TRANS"
 Dim kTextGroupLabelSubPath   As String = "$GROUP_LABEL$TRANS$txt_group"
 Dim kDataSubPath             As String = "$DATA"
 
-'Dim kBar1SubPath             As String = "$TRANS$G1_E1$DATA"
-'Dim kBar2SubPath             As String = "$TRANS$G1_E2$DATA"
-
 Dim kBarColoredSubPath       As String = "$obj_geom"
-Dim kBarColoredSubPathMirror As String = "$obj_geom_mirror"
 Dim kArrowSubPath            As String = "$TRANS$ELE_ARROW"
 
 Dim kTextDataSubPath         As String = "$TXT_DATA"
@@ -53,7 +48,7 @@ Dim kTextLabel1SubPath       As String = "$TXT_LABEL_1"
 Dim kTextLabel2SubPath       As String = "$TXT_LABEL_2"
 Dim kTextLabel3SubPath       As String = "$TXT_LABEL_3"
 Dim kTextSubPath             As String = "$txt_value"
-Dim kTextDiffSubPath         As String = "$txt_value_diff"
+Dim kTextDiffSubPath         As String = "$txt_diff"
 Dim kInfoPercentSubPath      As String = "$INFO_PERCENT"
 
 Dim kValueSubPath            As String = "$txt_value"
@@ -65,9 +60,7 @@ Dim kServerMaterialPath      As String = "MATERIAL*ZDFWahlen_2017/9_SHARED/mater
 '-------------------------------------------------------------------------------
 ' contaner definitions
 '-------------------------------------------------------------------------------
-Dim contBarObj1, contBarObj1Mirror As Container
-Dim contBarObj2, contBarObj2Mirror As Container
-'Dim nVisibleLabel As Integer
+Dim contBarObj1, contBarObj2 As Container
 
 '-------------------------------------------------------------------------------
 ' STRUCTURE definitions
@@ -119,9 +112,6 @@ Sub OnInitParameters()
 	strInfoText = strInfoText & "graphics:      " & theGraphics & "\n"
 
 	RegisterInfoText(strInfoText)
-	
-
-
 
 	RegisterParameterString("theTypeOfGraphic", "type of graphic [HROW|HROWPD|HROWD]:", "HROW", 50, 75, "")
 	RegisterParameterString("theElementName", "element name [gHROW_6x]:", "gHROW_6x", 50, 75, "")
@@ -275,20 +265,18 @@ Sub readGraphicsData()
 	Next
 
 	' get maxVizValue [UMVP|UMVPD]
-	fMinVizValue = 0.0
-	fMaxVizValue = sGlobalParameter.dblMaxVizValueHROW
+	fMaxVizValue = sGlobalParameter.dblMaxVizValueHROWP
+	' get maxVizValue
+	If sGraphicsData.strTypeOfGraphic = "HROWPD" Or sGraphicsData.strTypeOfGraphic = "HROWD" Then
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueHROWPD
+	Else
+		fMaxVizValue = sGlobalParameter.dblMaxVizValueHROWP
+	End If
 
 	Scene.dbgOutput(1, strDebugLocation, "[fMaxVizValue] [fMaxBarValue]: ["	& fMaxVizValue & "] [" & fMaxBarValue & "]" )
 
-'println "DEBUG: ------------------------------------------------"
-'println "DEBUG: [2*sGlobalParameter.dblMaxVizValueHRLabHeight]: ["	& 2*sGlobalParameter.dblMaxVizValueHRLabHeight & "]" 
-'println "DEBUG: [fMinVizValue] [fMaxVizValue]: ["	& fMinVizValue & "] [" & fMaxVizValue & "]" 
-'println "DEBUG: [fMinRangeValue] [fMaxRangeValue]: ["	& sGraphicsData.aGroup[0].dblMinValue & "] [" & sGraphicsData.aGroup[0].dblMaxValue & "]" 
-'println "DEBUG: [dblScaleFactor] [dblZeroPosY]: ["	& dblScaleFactor & "] [" & dblZeroPosY & "]" 
-'println "DEBUG: [nVisibleLabel]: ["	& nVisibleLabel & "]" 
-
 	' print data
-'	dumpData()
+	dumpData()
 
 End Sub
 '-------------------------------------------------------------------------------
@@ -331,7 +319,7 @@ Sub updateScene_assignData()
 	Dim tmpGroupName, tmpElementName, strHelp As String
 	Dim tmpMaterial As Material
 	Dim cntIdx As Integer
-	Dim dblValue, dblScaleFactor, dblZeroPosY As Double
+	Dim dblValue As Double
 	Dim iGroup, iElement As Integer
 	Dim fMinRange, fMaxRange As Double
 	Dim strHelpValueTxt as String
@@ -344,17 +332,6 @@ Sub updateScene_assignData()
 	' calculate posY of zero plane
 	fMinRange = sGraphicsData.aGroup[0].dblMinValue
 	fMaxRange = sGraphicsData.aGroup[0].dblMaxValue
-
-	dblScaleFactor = ( fMaxVizValue - fMinVizValue) / ( fMaxRange - fMinRange )
-
-'println "DEBUG: ------------------------------------------------"
-'println "DEBUG: [sGlobalParameter.dblUMLabHeight]: ["	& sGlobalParameter.dblUMLabHeight & "]" 
-'println "DEBUG: [fMinVizValue] [fMaxVizValue]: ["	& fMinVizValue & "] [" & fMaxVizValue & "]" 
-'println "DEBUG: [fMinRangeValue] [fMaxRangeValue]: ["	& fMinRange & "] [" & fMaxRange & "]" 
-'println "DEBUG: [dblScaleFactor] [dblZeroPosY]: ["	& dblScaleFactor & "] [" & dblZeroPosY & "]" 
-'println "DEBUG: [dblZeroPosY]: ["	& dblZeroPosY & "]" 
-'println "DEBUG: [scaleFactor = (fMaxVizValue-fMinVizValue-2*labelHeigth)/(fMaxRange-fMinRange)]: ["	& dblScaleFactor & "=(" & fMaxVizValue & "-" & fMinVizValue & "-2*" & sGlobalParameter.dblUMLabHeight & ")/(" & fMaxRange & "-" & fMinRange & ") = " & dblScaleFactor
-'println "DEBUG: [zeroPosY]: ["	& dblZeroPosY & "]" 
 
 	' set visibility of info percent label
 	contBlenderElementIN.FindSubcontainer( kTransSubPath & kInfoPercentSubPath ).Active = sGraphicsData.blnInfoPercentFlag
@@ -381,12 +358,11 @@ Sub updateScene_assignData()
 			Scene.dbgOutput(1, strDebugLocation, "[contElement.Name]: [" & contElement.Name & "]")
 
 			' calculate and set animation value
-			dblValue = dblScaleFactor * CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
+			dblValue = CDbl( sGraphicsData.aGroup[iGroup].aValueNum[iElement] )
+			dblValue = dblValue * fMaxVizValue / fMaxBarValue
 			' always show some color
 			dblValue =  Scene._validateMinBarValue( dblValue, 0.1 )
 			contElement.FindSubContainer( kDataSubPath & kBarColoredSubPath ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-			contElement.FindSubContainer( kDataSubPath & kBarColoredSubPathMirror ).FindKeyframeOfObject("k_value").FloatValue = dblValue
-
 
 			' set text value and labels
 			If sGraphicsData.strTypeOfGraphic = "HROWPD" Or sGraphicsData.strTypeOfGraphic = "HROWD" Then
@@ -418,10 +394,6 @@ Sub updateScene_assignData()
 			contElement.FindSubContainer("$DATA$obj_geom").Material = tmpMaterial
 			contElement.FindSubContainer("$DATA$obj_geom").FindKeyframeOfObject("k_value").FloatValue = dblValue
 			
-			tmpMaterial = contElement.FindSubContainer("$DATA$obj_geom_mirror").CreateMaterial(kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] ) 
-			contElement.FindSubContainer("$DATA$obj_geom_mirror").Material = tmpMaterial
-			contElement.FindSubContainer("$DATA$obj_geom_mirror").FindKeyframeOfObject("k_value").FloatValue = dblValue
-			
 			' add animation index to playout control
 			Scene._PlayoutAnimationAdd( contElement, sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] )
 			Scene.dbgOutput(1, strDebugLocation, "[director name] [animOrderFlag]: [" & contElement.Name & "] [" & sGraphicsData.aGroup[iGroup].aAnimOrderFlag[iElement] & "]")
@@ -432,10 +404,4 @@ Sub updateScene_assignData()
 	
 End Sub
 '-------------------------------------------------------------------------------
-
-
-
-
-
-
 

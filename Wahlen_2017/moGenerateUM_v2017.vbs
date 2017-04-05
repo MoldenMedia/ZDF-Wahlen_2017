@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "25.09.2007"
-Dim theDateModified     As String = "28.03.2017"
+Dim theDateModified     As String = "04.04.2017"
 Dim theContactDetails   As String = "thomas@molden.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -22,9 +22,6 @@ Dim sGlobalParameter   As Scene.structGlobalParameter
 Dim aTypeOfBar   As Array[String]
 Dim aTypeOfGraph As Array[String]
 '-------------------------------------------------------------------------------
-Dim knMaxGroups    As Integer = 20 ' max number of groups set to 20!
-Dim knMaxTotalBars As Integer = 50 ' max number of total bars set to 50!
-
 ' NOTE:
 ' Noggi Width  = 736.5 is 1920 pixel screen size -> factor 2.6069
 ' Noggi Height = 414.2 is 1080 pixel screen size -> factor 2.6074
@@ -57,7 +54,7 @@ Dim kHGroupGap      As Double =  4.0
 Dim knHMaxGroups    As Integer = 20
 Dim knHMaxTotalBars As Integer = 20
 
-Dim kHBarWidth_100h As Double = 100.0
+Dim kHBarWidth_100h As Double = 104.0
 Dim kHBarBaGap_100h As Double = 12.0
 Dim kHBarGrGap_100h As Double = 100.0
 Dim kHBarWidth_78h  As Double = 78.0
@@ -66,10 +63,10 @@ Dim kHBarGrGap_78h  As Double = 72.0
 Dim kHBarWidth_57h  As Double = 57.0
 Dim kHBarBaGap_57h  As Double = 9.0
 Dim kHBarGrGap_57h  As Double = 56.0
-Dim kHBarWidth_48hw As Double = 48.0
+Dim kHBarWidth_48hw As Double = 52.0
 Dim kHBarBaGap_48hw As Double = 7.0
 Dim kHBarGrGap_48hw As Double = 48.0
-Dim kHBarWidth_48hs As Double = 48.0 
+Dim kHBarWidth_48hs As Double = 52.0 
 Dim kHBarBaGap_48hs As Double = 7.0
 Dim kHBarGrGap_48hs As Double = 7.0
 
@@ -348,7 +345,7 @@ Sub createGeometry()
 	End If
 
 	' Vertical Bars
-	If sGraphicDetails.strTypeOfGraph = "UMVP" Or sGraphicDetails.strTypeOfGraph = "UMVD" Or sGraphicDetails.strTypeOfGraph = "UMKB" Then
+	If sGraphicDetails.strTypeOfGraph = "UMVP" Or sGraphicDetails.strTypeOfGraph = "UMVD" Then
 	
 		Scene.dbgOutput(3, strDebugLocation, "creating geometry [" & sGraphicDetails.strTypeOfGraph & "]..")
 		' read geometry details
@@ -356,8 +353,8 @@ Sub createGeometry()
 		' build geometry
 		createGeometry_UMVerticalX()
 
-	' Horizontal Bars
-	ElseIf sGraphicDetails.strTypeOfGraph = "UMHP" Or sGraphicDetails.strTypeOfGraph = "UMHPD" Then
+	' Horizontal Bars, Koaliaitons shown as horizontal bars in layout2017
+	ElseIf sGraphicDetails.strTypeOfGraph = "UMHP" Or sGraphicDetails.strTypeOfGraph = "UMHPD" Or sGraphicDetails.strTypeOfGraph = "UMKB" Then
 
 		Scene.dbgOutput(4, strDebugLocation, "creating geometry [" & sGraphicDetails.strTypeOfGraph & "]....")
 		' read geometry details
