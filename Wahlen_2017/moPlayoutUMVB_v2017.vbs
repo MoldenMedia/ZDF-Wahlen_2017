@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "tm"
 Dim theDateStarted      As String = "10.10.2007"
-Dim theDateModified     As String = "23.03.2017"
+Dim theDateModified     As String = "06.04.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden GmbH"
 Dim theClient           As String = "ZDF"
@@ -422,6 +422,9 @@ Sub updateScene_assignData()
 				contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueDiffSubPath).Active = FALSE
 				Scene._updateScene_assignLabel_1( contElement.FindSubContainer(kDataSubPath & kTextDataSubPath), sGraphicsData.aGroup[iGroup].aValueTxt[iElement], sGraphicsData.aGroup[iGroup].aLabel1[iElement], sGraphicsData.aGroup[iGroup].aLabel2[iElement], sGraphicsData.aGroup[iGroup].aLabel3[iElement], dblValue )
 			End If
+
+			' set visibility of unit percent
+			contElement.FindSubContainer(kDataSubPath & kTextDataSubPath & kTextValueSubPath & "$txt_unit").Active = not sGraphicsData.blnInfoPercentFlag
 			
 			' set element material
 			Scene.dbgOutput(1, strDebugLocation, "[tmpMaterial]: [" & kServerMaterialPath & sGraphicsData.aGroup[iGroup].aMaterial[iElement] & "]")

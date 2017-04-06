@@ -1,7 +1,7 @@
 '-------------------------------------------------------------------------------
 Dim theAuthor           As String = "Thomas Molden"
 Dim theDateStarted      As String = "04.03.2007"
-Dim theDateModified     As String = "05.04.2017"
+Dim theDateModified     As String = "06.04.2017"
 Dim theContactDetails   As String = "t.molden@moldenmedia.de"
 Dim theCopyrightDetails As String = "(c) 2007-2017 ff Molden Media GmbH"
 Dim theClient           As String = "ZDF"
@@ -196,25 +196,25 @@ Sub readGlobalParameter()
 '	sGlobalParameter.dblMaxVizValueGraphHeight = GetParameterDouble("theMaxVizValueGraphHeight")
 
 	sGlobalParameter.dblMaxVizValueHRWB        = 37.3
-	sGlobalParameter.dblMaxVizValueHRPZ        = 167.0
-	sGlobalParameter.dblMaxVizValueHRPZD       = 138.0
-	sGlobalParameter.dblMaxVizValueHRPD        = 81.0
-	sGlobalParameter.dblMaxVizValueHRPG        = 138.0
+	sGlobalParameter.dblMaxVizValueHRPZ        = 167.1
+	sGlobalParameter.dblMaxVizValueHRPZD       = 138.1
+	sGlobalParameter.dblMaxVizValueHRPD        = 80.9
+	sGlobalParameter.dblMaxVizValueHRPG        = 138.1
 	sGlobalParameter.dblMaxVizValueHRSV        = 180.0
 	sGlobalParameter.dblMaxVizValueHROWP       = 100.0
 	sGlobalParameter.dblMaxVizValueHROWPD      = 100.0
 	sGlobalParameter.dblMaxVizValueHRSVB       = 315.0
-	sGlobalParameter.dblMaxVizValueUMVB        = 60.0
-	sGlobalParameter.dblMaxVizValueUMVP        = 167.0
-	sGlobalParameter.dblMaxVizValueUMVD        = 81.0
+	sGlobalParameter.dblMaxVizValueUMVB        = 56.0
+	sGlobalParameter.dblMaxVizValueUMVP        = 165.9
+	sGlobalParameter.dblMaxVizValueUMVD        = 80.9
 	sGlobalParameter.dblMaxVizValueUMHP        = 190.0
 	sGlobalParameter.dblMaxVizValueUMHPD       = 120.0
 	sGlobalParameter.dblMaxVizValueUMAS        = 53.5
-	sGlobalParameter.dblMaxVizValueUMKB        = 190.0
+	sGlobalParameter.dblMaxVizValueUMKB        = 285.0
 	sGlobalParameter.dblMaxVizValueUMKV        = 125.0
-	sGlobalParameter.dblMaxVizValueANVP        = 167.0
-	sGlobalParameter.dblMaxVizValueANVPD       = 138.0
-	sGlobalParameter.dblMaxVizValueANVD        = 50.0
+	sGlobalParameter.dblMaxVizValueANVP        = 167.1
+	sGlobalParameter.dblMaxVizValueANVPD       = 138.1
+	sGlobalParameter.dblMaxVizValueANVD        = 80.9
 	sGlobalParameter.dblMaxVizValueHRLabHeight = 3.8
 	sGlobalParameter.dblHRLabHeight            = 3.8
 	sGlobalParameter.dblUMLabHeight            = 4.6
@@ -1231,6 +1231,7 @@ End Sub
 Function GetHRSVK2_Variant() as Integer
 	GetHRSVK2_Variant = iHRSVK2_Variant
 End Function
+
 
 
 

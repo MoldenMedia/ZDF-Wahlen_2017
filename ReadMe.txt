@@ -17,6 +17,15 @@ Umfrage     : UMVP, UMVD, UMVB_2x/3x, UMKV3 (teilweise)
 TODO:
 --> maxSize for UMVD
 --> maxSize for UMVD needs to be fixed
+--> range scaling
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+2017.04.06:
+moGenerateUM_v2017:
+- UMKB bars are using horizontal bars in the layout 2017
+
+moPlayoutUMKB_v2017:
+- started support for layout 2017
 
 '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 2017.04.01/04/05:
