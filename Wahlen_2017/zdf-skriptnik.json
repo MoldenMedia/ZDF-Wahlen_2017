@@ -1,0 +1,99 @@
+﻿{
+  "scripts": [
+    {
+      "name": "SceneScript",
+      "file": "SceneScript.vbs",
+      "remote": "(scene)"
+    },
+    {
+      "name": "ANNQRX",
+      "file": "moPlayoutANNQRX.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutANNQRX_v00"
+    },
+    {
+      "name": "ANSVZX",
+      "file": "moPlayoutANSVZX.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutANSVZX_v00"
+    },
+    {
+      "name": "GenerateUM",
+      "file": "moGenerateUM.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$GENERATE$moGenerateUM_v00"
+    },
+    {
+      "name": "Headline",
+      "file": "moPlayoutHeadline.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moHeadline_v00"
+    },
+    {
+      "name": "HROW",
+      "file": "moPlayoutHROW.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutHROW_v00"
+    },
+    {
+      "name": "HRPX",
+      "file": "moPlayoutHRPX.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutHRPX_v00"
+    },
+    {
+      "name": "HRSVB",
+      "file": "moPlayoutHRSVB.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutHRSVB_v00"
+    },
+    {
+      "name": "HRSVK1",
+      "file": "moPlayoutHRSVK1.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutHRSVK1_v00"
+    },
+    {
+      "name": "HRSVS1",
+      "file": "moPlayoutHRSVS1.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutHRSVS1_v00"
+    },
+    {
+      "name": "HRWB",
+      "file": "moPlayoutHRWB.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutHRWB_v00"
+    },
+    {
+      "name": "Legends",
+      "file": "moPlayoutLegends.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moLegends_v00"
+    },
+    {
+      "name": "PBRK",
+      "file": "moPlayoutPBRK.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutPBRK_v00"
+    },
+    {
+      "name": "TransitionGfx",
+      "file": "moTransitionGfx.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$moTransitionGfx_v00"
+    },
+    {
+      "name": "UMHX",
+      "file": "moPlayoutUMHX.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutUMHX_v00"
+    },
+    {
+      "name": "UMKB",
+      "file": "moPlayoutUMKB.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutUMKB_v00"
+    },
+    {
+      "name": "UMKV3",
+      "file": "moPlayoutUMKV3.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutUMKV3_v00"
+    },
+    {
+      "name": "UMVB",
+      "file": "moPlayoutUMVB.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutUMVB_v00"
+    },
+    {
+      "name": "UMVX",
+      "file": "moPlayoutUMVX.vbs",
+      "remote": "$ALL$SCRIPTING_POOL$PLAYOUT$moPlayoutUMVX_v00"
+    }
+  ]
+}
